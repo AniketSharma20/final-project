@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeGuard - Women Security System | Advanced Protection Technology</title>
+    <meta name="description" content="SafeGuard is an advanced women security system with AI-powered emergency assistance, live location tracking, and 24/7 protection features.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='landing-styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='auth-enhanced.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='auth-styles.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='pattern-lock-simple.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+</head>
+<body class="landing-page">
+    <!-- Navigation -->
+    <nav class="landing-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="brand-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-name">SafeGuard</span>
+                    <span class="brand-tagline">Women Security System</span>
+                </div>
+            </div>
+            <div class="nav-actions">
+                <button class="nav-btn login-btn" onclick="showAuthModal('login')">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </button>
+                <button class="nav-btn signup-btn" onclick="showAuthModal('register')">
+                    <i class="fas fa-user-plus"></i>
+                    Get Started
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-background">
+            <div class="hero-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+                <div class="shape shape-3"></div>
+                <div class="shape shape-4"></div>
+                <div class="shape shape-5"></div>
+            </div>
+        </div>
+        <div class="hero-content">
+            <div class="container">
+                <div class="hero-grid">
+                    <div class="hero-text">
+                        <div class="hero-badge">
+                            <i class="fas fa-star"></i>
+                            <span>Trusted by 10,000+ Women Worldwide</span>
+                        </div>
+                        <h1 class="hero-title">
+                            Your Safety is Our 
+                            <span class="gradient-text">Top Priority</span>
+                        </h1>
+                        <p class="hero-subtitle">
+                            AI-powered protection that works 24/7. Instant emergency response, real-time location sharing,
+                            and intelligent safety features designed specifically for women's security needs.
+                        </p>
+                        <div class="hero-stats">
+                            <div class="stat-item">
+                                <div class="stat-number">99.9%</div>
+                                <div class="stat-label">Uptime</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">24/7</div>
+                                <div class="stat-label">Protection</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">50+</div>
+                                <div class="stat-label">Cities</div>
+                            </div>
+                        </div>
+                        <div class="hero-actions">
+                            <button class="cta-btn primary" onclick="showAuthModal('register')">
+                                <i class="fas fa-rocket"></i>
+                                Start Free Protection
+                            </button>
+                            <button class="cta-btn secondary" onclick="scrollToSection('features')">
+                                <i class="fas fa-play"></i>
+                                See How It Works
+                            </button>
+                        </div>
+                        <div class="hero-trust">
+                            <div class="trust-item">
+                                <i class="fas fa-shield-check"></i>
+                                <span>Bank-level Security</span>
+                            </div>
+                            <div class="trust-item">
+                                <i class="fas fa-lock"></i>
+                                <span>End-to-End Encrypted</span>
+                            </div>
+                            <div class="trust-item">
+                                <i class="fas fa-certificate"></i>
+                                <span>GDPR Compliant</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-visual">
+                        <div class="phone-mockup">
+                            <div class="phone-frame">
+                                <div class="phone-screen">
+                                    <div class="app-interface">
+                                        <div class="app-header">
+                                            <div class="app-title">SafeGuard</div>
+                                            <div class="status-indicator safe">
+                                                <i class="fas fa-shield-alt"></i>
+                                                <span>Safe</span>
+                                            </div>
+                                        </div>
+                                        <div class="app-content">
+                                            <div class="location-card active">
+                                                <div class="card-icon">
+                                                    <i class="fas fa-map-marker-alt"></i>
+                                                </div>
+                                                <div class="card-content">
+                                                    <h4>Live Location</h4>
+                                                    <p>Tracking active • 2.3km radius</p>
+                                                </div>
+                                            </div>
+                                            <div class="emergency-buttons">
+                                                <button class="emergency-btn siren">
+                                                    <i class="fas fa-bell"></i>
+                                                </button>
+                                                <button class="emergency-btn call">
+                                                    <i class="fas fa-phone"></i>
+                                                </button>
+                                                <button class="emergency-btn alert">
+                                                    <i class="fas fa-exclamation-triangle"></i>
+                                                </button>
+                                            </div>
+                                            <div class="ai-assistant">
+                                                <div class="ai-status">
+                                                    <div class="ai-avatar">
+                                                        <i class="fas fa-robot"></i>
+                                                    </div>
+                                                    <div class="ai-info">
+                                                        <h4>AI Assistant</h4>
+                                                        <p>Ready to help • Online</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="floating-cards">
+                            <div class="floating-card card-1">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Location Shared</span>
+                            </div>
+                            <div class="floating-card card-2">
+                                <i class="fas fa-phone"></i>
+                                <span>Emergency Called</span>
+                            </div>
+                            <div class="floating-card card-3">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Safely Protected</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-badge">
+                    <i class="fas fa-star"></i>
+                    <span>Why Choose SafeGuard</span>
+                </div>
+                <h2 class="section-title">
+                    Comprehensive Protection
+                    <span class="gradient-text">You Can Trust</span>
+                </h2>
+                <p class="section-subtitle">
+                    Advanced security technology meets intuitive design to deliver unmatched protection
+                    for women in any situation.
+                </p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon ai-powered">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI-Powered Assistant</h3>
+                    <p>Smart AI that understands emergencies and responds instantly with appropriate actions. Voice-activated help when you need it most.</p>
+                    <div class="feature-benefits">
+                        <div class="benefit">
+                            <i class="fas fa-check"></i>
+                            <span>Voice Recognition</span>
+                        </div>
+                        <div class="benefit">
+                            <i class="fas fa-check"></i>
+                            <span>Natural Language</span>
+                        </div>
+                        <div class="benefit">
+                            <i class="fas fa-check"></i>
+                            <span>Instant Response</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon location">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3>Live Location Tracking</h3>
+                    <p>Real-time location sharing with trusted contacts and emergency services. Never feel alone with constant protection.</p>
+                    <div class="feature-benefits">
+                        <div class="benefit">
+                            <i class="fas fa-check"></i>
+                            <span>Real-time Updates</span>
+                        </div>
+                        <div class="benefit">
+                            <i class="fas fa-check"></i>
+                            <span>Emergency Contacts</span>
+                        </div>
+                        <div class="benefit">
+                            <i class="fas fa-check"></i>
+                            <span>Historical Data</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon emergency">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <h3>Emergency Response</h3>
+                    <p>One-touch emergency features including siren alarms, fake calls, and automatic emergency service notifications.</p>
+                    <div class="feature-benefits">
+                        <div class="benefit">
+                            <i class="fas fa-check"></i>
+                            <span>Instant Alerts</span>
+                        </div>
+                        <div class="benefit">
+                            <i class="fas fa-check"></i>
+                            <span>Auto-dialing</span>
+                        </div>
+                        <div class="benefit">
+                            <i class="fas fa-check"></i>
+                            <span>Multi-channel</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon shelter">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h3>Safe Shelter Network</h3>
+                    <p>Access to verified safe houses and shelters in your area with real-time availability and directions.</p>
+                    <div class="feature-benefits">
+                        <div class="benefit">
+                            <i class="fas fa-check"></i>
+                            <span>Verified Locations</span>
+                        </div>
+                        <div class="benefit">
+                            <i class="fas fa-check"></i>
+                            <span>Real-time Status</span>
+                        </div>
+                        <div class="benefit">
+                            <i class="fas fa-check"></i>
+                            <span>Direct Contact</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon security">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Advanced Security</h3>
+                    <p>Military-grade encryption and security protocols ensure your data and communications remain private and protected.</p>
+                    <div class="feature-benefits">
+                        <div class="benefit">
+                            <i class="fas fa-check"></i>
+                            <span>End-to-End Encryption</span>
+                        </div>
+                        <div class="benefit">
+                            <i class="fas fa-check"></i>
+                            <span>Secure Storage</span>
+                        </div>
+                        <div class="benefit">
+                            <i class="fas fa-check"></i>
+                            <span>Privacy First</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon community">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Community Support</h3>
+                    <p>Connect with a supportive community and access resources, tips, and shared experiences from other users.</p>
+                    <div class="feature-benefits">
+                        <div class="benefit">
+                            <i class="fas fa-check"></i>
+                            <span>Anonymous Sharing</span>
+                        </div>
+                        <div class="benefit">
+                            <i class="fas fa-check"></i>
+                            <span>Expert Resources</span>
+                        </div>
+                        <div class="benefit">
+                            <i class="fas fa-check"></i>
+                            <span>24/7 Support</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-badge">
+                    <i class="fas fa-cogs"></i>
+                    <span>Simple & Effective</span>
+                </div>
+                <h2 class="section-title">
+                    How SafeGuard
+                    <span class="gradient-text">Protects You</span>
+                </h2>
+                <p class="section-subtitle">
+                    Getting started is simple. Our intuitive system provides maximum protection with minimal effort.
+                </p>
+            </div>
+
+            <div class="process-timeline">
+                <div class="timeline-item">
+                    <div class="timeline-icon">
+                        <span class="step-number">1</span>
+                    </div>
+                    <div class="timeline-content">
+                        <h3>Quick Registration</h3>
+                        <p>Create your secure account in less than 2 minutes. Set up your emergency contacts and preferences.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-icon">
+                        <span class="step-number">2</span>
+                    </div>
+                    <div class="timeline-content">
+                        <h3>Activate Protection</h3>
+                        <p>Enable location tracking and emergency features. Your AI assistant is ready to help at any time.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-icon">
+                        <span class="step-number">3</span>
+                    </div>
+                    <div class="timeline-content">
+                        <h3>Stay Protected</h3>
+                        <p>Go about your day with confidence. Our system works silently in the background, keeping you safe.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-icon">
+                        <span class="step-number">4</span>
+                    </div>
+                    <div class="timeline-content">
+                        <h3>Emergency Response</h3>
+                        <p>When you need help, one touch activates all emergency features. Help arrives quickly and efficiently.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-badge">
+                    <i class="fas fa-heart"></i>
+                    <span>Real Stories</span>
+                </div>
+                <h2 class="section-title">
+                    Trusted by
+                    <span class="gradient-text">Thousands</span>
+                </h2>
+            </div>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p>"SafeGuard gave me the confidence to travel alone for work. The AI assistant is incredibly responsive, and knowing I can get help instantly makes all the difference."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="author-info">
+                            <h4>Sarah M.</h4>
+                            <span>Business Consultant</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p>"As a college student, SafeGuard provides peace of mind for both me and my parents. The emergency features are easy to use and incredibly effective."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="author-info">
+                            <h4>Emily R.</h4>
+                            <span>University Student</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p>"The location tracking feature has been a lifesaver. My family always knows I'm safe, and I feel protected wherever I go. Highly recommend!"</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="author-info">
+                            <h4>Maria L.</h4>
+                            <span>Healthcare Worker</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-number">10,000+</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="stat-number">99.9%</div>
+                    <div class="stat-label">Uptime Reliability</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">Emergencies Resolved</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-number">4.9/5</div>
+                    <div class="stat-label">User Rating</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2 class="cta-title">
+                    Ready to Feel
+                    <span class="gradient-text">Completely Safe?</span>
+                </h2>
+                <p class="cta-subtitle">
+                    Join thousands of women who trust SafeGuard. Start your free account today and experience peace of mind.
+                </p>
+                <div class="cta-actions">
+                    <button class="cta-btn primary large" onclick="showAuthModal('register')">
+                        <i class="fas fa-rocket"></i>
+                        Start Free Protection
+                    </button>
+                    <button class="cta-btn secondary large" onclick="showAuthModal('login')">
+                        <i class="fas fa-sign-in-alt"></i>
+                        I Already Have an Account
+                    </button>
+                </div>
+                <div class="cta-features">
+                    <div class="cta-feature">
+                        <i class="fas fa-check"></i>
+                        <span>Free to start</span>
+                    </div>
+                    <div class="cta-feature">
+                        <i class="fas fa-check"></i>
+                        <span>No credit card required</span>
+                    </div>
+                    <div class="cta-feature">
+                        <i class="fas fa-check"></i>
+                        <span>Setup in 2 minutes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="landing-footer">
+        <div class="container">
+            <div class="footer-main">
+                <div class="footer-brand-section">
+                    <div class="footer-logo">
+                        <div class="footer-logo-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="footer-logo-text">
+                            <span class="footer-brand-name">SafeGuard</span>
+                            <span class="footer-brand-tagline">Women Security System</span>
+                        </div>
+                    </div>
+                    <p class="footer-description">
+                        Empowering women with advanced security technology for a safer tomorrow. 
+                        Our mission is to provide comprehensive protection and peace of mind.
+                    </p>
+                    <div class="footer-contact">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-info">
+                                <span class="contact-label">Email Us</span>
+                                <a href="mailto:support@safeguard.com">support@safeguard.com</a>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <div class="contact-info">
+                                <span class="contact-label">Call Us</span>
+                                <a href="tel:+18001234567">1-800-123-4567</a>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-info">
+                                <span class="contact-label">Visit Us</span>
+                                <span>123 Safety Street, Secure City</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-links-section">
+                    <div class="footer-links-group">
+                        <h4 class="footer-group-title">
+                            <i class="fas fa-box"></i>
+                            Product
+                        </h4>
+                        <ul class="footer-links">
+                            <li><a href="#features" class="footer-link"><i class="fas fa-chevron-right"></i>Features</a></li>
+                            <li><a href="#security" class="footer-link"><i class="fas fa-chevron-right"></i>Security</a></li>
+                            <li><a href="#pricing" class="footer-link"><i class="fas fa-chevron-right"></i>Pricing</a></li>
+                            <li><a href="#api" class="footer-link"><i class="fas fa-chevron-right"></i>API</a></li>
+                            <li><a href="#integrations" class="footer-link"><i class="fas fa-chevron-right"></i>Integrations</a></li>
+                            <li><a href="#changelog" class="footer-link"><i class="fas fa-chevron-right"></i>Changelog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-group">
+                        <h4 class="footer-group-title">
+                            <i class="fas fa-headset"></i>
+                            Support
+                        </h4>
+                        <ul class="footer-links">
+                            <li><a href="#help" class="footer-link"><i class="fas fa-chevron-right"></i>Help Center</a></li>
+                            <li><a href="#contact" class="footer-link"><i class="fas fa-chevron-right"></i>Contact Us</a></li>
+                            <li><a href="#community" class="footer-link"><i class="fas fa-chevron-right"></i>Community</a></li>
+                            <li><a href="#status" class="footer-link"><i class="fas fa-chevron-right"></i>System Status</a></li>
+                            <li><a href="#faq" class="footer-link"><i class="fas fa-chevron-right"></i>FAQ</a></li>
+                            <li><a href="#guides" class="footer-link"><i class="fas fa-chevron-right"></i>User Guides</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-group">
+                        <h4 class="footer-group-title">
+                            <i class="fas fa-building"></i>
+                            Company
+                        </h4>
+                        <ul class="footer-links">
+                            <li><a href="#about" class="footer-link"><i class="fas fa-chevron-right"></i>About Us</a></li>
+                            <li><a href="#careers" class="footer-link"><i class="fas fa-chevron-right"></i>Careers</a></li>
+                            <li><a href="#press" class="footer-link"><i class="fas fa-chevron-right"></i>Press</a></li>
+                            <li><a href="#legal" class="footer-link"><i class="fas fa-chevron-right"></i>Legal</a></li>
+                            <li><a href="#privacy" class="footer-link"><i class="fas fa-chevron-right"></i>Privacy Policy</a></li>
+                            <li><a href="#terms" class="footer-link"><i class="fas fa-chevron-right"></i>Terms of Service</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Newsletter Section -->
+            <div class="footer-newsletter">
+                <div class="newsletter-content">
+                    <div class="newsletter-text">
+                        <h4><i class="fas fa-paper-plane"></i>Stay Updated</h4>
+                        <p>Subscribe to our newsletter for safety tips, product updates, and exclusive offers.</p>
+                    </div>
+                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                        <div class="newsletter-input-wrapper">
+                            <i class="fas fa-envelope newsletter-input-icon"></i>
+                            <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
+                            <button type="submit" class="newsletter-btn">
+                                <span>Subscribe</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <div class="footer-copyright">
+                        <p>&copy; 2024 <strong>SafeGuard</strong>. All rights reserved. Built with <i class="fas fa-heart" style="color: #f5576c;"></i> for women's safety worldwide.</p>
+                    </div>
+                    <div class="footer-social">
+                        <a href="#facebook" class="social-link" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#twitter" class="social-link" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#instagram" class="social-link" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#linkedin" class="social-link" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#youtube" class="social-link" aria-label="YouTube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="auth-modal">
+        <div class="modal-overlay" onclick="closeAuthModal()"></div>
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeAuthModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="auth-container-main">
+                <!-- Auth forms will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='simple_working_pattern_lock.js') }}"></script>
+    <script src="{{ url_for('static', filename='auth-enhanced.js') }}"></script>
+    <script>
+        // Enhanced Landing page functionality
+        function showAuthModal(type) {
+            const modal = document.getElementById('authModal');
+            const container = modal.querySelector('.auth-container-main');
+            
+            // Show loading state
+            container.innerHTML = '<div style="padding: 40px; text-align: center;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #667eea;"></i><p>Loading authentication forms...</p></div>';
+            modal.style.display = 'flex';
+            
+            // Load the enhanced authentication forms
+            fetch('/auth-forms')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    container.innerHTML = html;
+                    
+                    // Switch to appropriate tab
+                    if (type === 'register') {
+                        setTimeout(() => {
+                            const registerTab = container.querySelector('[data-tab="register"]');
+                            if (registerTab) registerTab.click();
+                        }, 100);
+                    } else {
+                        setTimeout(() => {
+                            const loginTab = container.querySelector('[data-tab="login"]');
+                            if (loginTab) loginTab.click();
+                        }, 100);
+                    }
+                    
+                    // Initialize modal-specific functionality
+                    if (window.modalAuthHandler) {
+                        window.modalAuthHandler.init();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading auth forms:', error);
+                    showModalMessage('Failed to load authentication forms. Please try again.', 'error');
+                });
+        }
+
+        function closeAuthModal() {
+            const modal = document.getElementById('authModal');
+            modal.style.display = 'none';
+        }
+
+        function showModalMessage(message, type) {
+            // Create or update message display
+            let messageDiv = document.getElementById('modalAuthMessage');
+            if (!messageDiv) {
+                messageDiv = document.createElement('div');
+                messageDiv.id = 'modalAuthMessage';
+                messageDiv.className = 'auth-message';
+                const modal = document.getElementById('authModal');
+                const container = modal.querySelector('.auth-container-main');
+                if (container) container.appendChild(messageDiv);
+            }
+            
+            if (messageDiv) {
+                messageDiv.innerHTML = `
+                    <div class="message ${type}">
+                        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                        <span>${message}</span>
+                        <button class="message-close" onclick="this.parentElement.parentElement.style.display='none'">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                messageDiv.style.display = 'block';
+                
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    if (messageDiv) messageDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Newsletter subscription handler
+        function subscribeNewsletter(event) {
+            event.preventDefault();
+            const emailInput = event.target.querySelector('.newsletter-input');
+            const email = emailInput.value;
+            
+            // Simulate subscription
+            const btn = event.target.querySelector('.newsletter-btn');
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = '<i class="fas fa-check"></i><span>Subscribed!</span>';
+            btn.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.background = '';
+                emailInput.value = '';
+            }, 3000);
+        }
+
+        // Smooth scrolling for navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add smooth scrolling to all anchor links
+            const links = document.querySelectorAll('a[href^="#"]');
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    scrollToSection(targetId);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

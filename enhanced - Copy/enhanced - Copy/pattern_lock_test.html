@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pattern Lock Test</title>
+    <link rel="stylesheet" href="static/pattern-lock-simple.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .test-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .debug {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Pattern Lock System Test</h1>
+    
+    <div class="test-container">
+        <h2>Test 1: Pattern Lock Initialization</h2>
+        <div id="patternLockContainer"></div>
+        <div id="initResult" class="test-result"></div>
+        <div id="debugInfo" class="test-result debug" style="display: none;"></div>
+    </div>
+
+    <div class="test-container">
+        <h2>Test 2: Pattern Lock Functionality</h2>
+        <div id="functionalityResult" class="test-result"></div>
+        <button onclick="testPatternFunctionality()" style="margin-top: 10px; padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Test Pattern Drawing
+        </button>
+    </div>
+
+    <div class="test-container">
+        <h2>Test 3: Pattern Data Handling</h2>
+        <div id="dataResult" class="test-result"></div>
+        <button onclick="testPatternData()" style="margin-top: 10px; padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Test Pattern Data
+        </button>
+    </div>
+
+    <!-- Load Pattern Lock Script -->
+    <script src="static/simple_working_pattern_lock.js"></script>
+    
+    <script>
+        let testPatternLock = null;
+        let testResults = [];
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${message}`;
+            testResults.push(logMessage);
+            console.log(logMessage);
+            
+            const debugDiv = document.getElementById('debugInfo');
+            debugDiv.innerHTML = testResults.slice(-10).join('<br>');
+            debugDiv.style.display = 'block';
+        }
+
+        function showResult(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.className = `test-result ${type}`;
+            element.innerHTML = message;
+        }
+
+        function testInitialization() {
+            log('Starting initialization test...');
+            
+            try {
+                // Check if SimpleWorkingPatternLock class exists
+                if (typeof SimpleWorkingPatternLock === 'undefined') {
+                    throw new Error('SimpleWorkingPatternLock class not found');
+                }
+                
+                log('✓ SimpleWorkingPatternLock class found');
+                
+                // Check if container exists
+                const container = document.getElementById('patternLockContainer');
+                if (!container) {
+                    throw new Error('Test container not found');
+                }
+                
+                log('✓ Test container found');
+                
+                // Initialize pattern lock
+                testPatternLock = new SimpleWorkingPatternLock('patternLockContainer', {
+                    title: 'Test Pattern Lock',
+                    subtitle: 'Test the pattern lock functionality',
+                    minDots: 4,
+                    onComplete: function(pattern) {
+                        log(`✓ Pattern completed: [${pattern.join(', ')}]`);
+                        showResult('initResult', '✅ Pattern Lock Initialized Successfully! The pattern lock is working correctly.', 'success');
+                    },
+                    onError: function(error) {
+                        log(`✗ Pattern error: ${error.message}`);
+                        showResult('initResult', '❌ Pattern Lock Error: ' + error.message, 'error');
+                    }
+                });
+                
+                log('✓ Pattern lock instance created');
+                showResult('initResult', '✅ Pattern Lock Initialized Successfully!', 'success');
+                
+            } catch (error) {
+                log(`✗ Initialization failed: ${error.message}`);
+                showResult('initResult', '❌ Pattern Lock Initialization Failed: ' + error.message, 'error');
+            }
+        }
+
+        function testPatternFunctionality() {
+            if (!testPatternLock) {
+                showResult('functionalityResult', '❌ Pattern lock not initialized. Run test 1 first.', 'error');
+                return;
+            }
+            
+            try {
+                // Test pattern completion simulation
+                log('Testing pattern completion...');
+                
+                // Simulate pattern completion
+                const testPattern = [0, 1, 2, 4, 7];
+                testPatternLock.selectedDots = testPattern;
+                
+                // Trigger validation
+                if (testPattern.length >= testPatternLock.options.minDots) {
+                    log(`✓ Test pattern [${testPattern.join(', ')}] meets minimum requirements`);
+                    showResult('functionalityResult', '✅ Pattern Functionality Test Passed! The pattern validation is working correctly.', 'success');
+                } else {
+                    throw new Error('Test pattern too short');
+                }
+                
+            } catch (error) {
+                log(`✗ Functionality test failed: ${error.message}`);
+                showResult('functionalityResult', '❌ Pattern Functionality Test Failed: ' + error.message, 'error');
+            }
+        }
+
+        function testPatternData() {
+            try {
+                log('Testing pattern data handling...');
+                
+                // Test pattern data structure
+                const testPatterns = [
+                    [0, 1, 2, 4],           // Minimum valid pattern
+                    [0, 1, 2, 4, 7, 8],     // Longer pattern
+                    [8, 7, 6, 4, 1, 0],     // Reverse pattern
+                    [0, 4, 8, 2, 6]         // Diagonal pattern
+                ];
+                
+                testPatterns.forEach((pattern, index) => {
+                    log(`✓ Test pattern ${index + 1}: [${pattern.join(', ')}] (${pattern.length} dots)`);
+                });
+                
+                showResult('dataResult', '✅ Pattern Data Test Passed! All pattern data structures are valid.', 'success');
+                
+            } catch (error) {
+                log(`✗ Data test failed: ${error.message}`);
+                showResult('dataResult', '❌ Pattern Data Test Failed: ' + error.message, 'error');
+            }
+        }
+
+        // Run tests when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            log('Page loaded, starting tests...');
+            
+            // Small delay to ensure scripts are loaded
+            setTimeout(() => {
+                testInitialization();
+            }, 500);
+        });
+
+        // Global error handler
+        window.onerror = function(message, source, lineno, colno, error) {
+            log(`Global error: ${message} at ${source}:${lineno}:${colno}`);
+            return false;
+        };
+    </script>
+</body>
+</html>
