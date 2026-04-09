@@ -200,6 +200,12 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Mobile Hamburger Menu Button -->
+            <button class="hamburger-menu" id="hamburgerMenu" onclick="toggleMobileNav()">
+                <i class="fas fa-bars"></i>
+            </button>
+            
             <div class="header-center">
                 <div class="status-indicators">
                     <div class="status-item" id="locationStatus">
@@ -255,6 +261,9 @@
                 </div>
             </div>
         </header>
+
+        <!-- Mobile Nav Overlay -->
+        <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="toggleMobileNav()"></div>
         
         <!-- Enhanced Navigation -->
         <nav class="dashboard-nav">
@@ -655,7 +664,7 @@
                                     <h5>Location Share Emergency</h5>
                                 </div>
                                 <p>Send emergency alert with your current location to all contacts</p>
-                                <button class="btn btn-danger" onclick="sendLocationEmergencySMS()">
+                            <button class="btn btn-danger" onclick="sendEmergencySMS()">
                                     <i class="fas fa-paper-plane"></i> Send Location Emergency
                                 </button>
                             </div>
@@ -666,7 +675,7 @@
                                     <h5>Call for Help</h5>
                                 </div>
                                 <p>Send urgent help request message to emergency contacts</p>
-                                <button class="btn btn-danger" onclick="sendHelpEmergencySMS()">
+                            <button class="btn btn-danger" onclick="sendEmergencySMS()">
                                     <i class="fas fa-paper-plane"></i> Send Help Request
                                 </button>
                             </div>

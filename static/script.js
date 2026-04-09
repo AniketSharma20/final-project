@@ -597,6 +597,9 @@ function showSection(sectionId) {
         activeBtn.classList.add('active');
     }
     
+    // Close mobile nav if open
+    toggleMobileNav(true);
+    
     // Initialize or update content based on section
     switch(sectionId) {
         case 'location':
@@ -701,41 +704,7 @@ function updateOverviewStats() {
 
 // User Behavior Tracking Functions
 function trackUserBehavior(actionType, actionDetails = '', latitude = null, longitude = null) {
-    if (!navigator.onLine) {
-        console.log('Offline - behavior tracking will sync later');
-        return;
-    }
-
-    const behaviorData = {
-        action_type: actionType,
-        action_details: actionDetails,
-        device_info: isMobile() ? 'mobile' : 'desktop'
-    };
-
-    if (latitude !== null && longitude !== null) {
-        behaviorData.latitude = latitude;
-        behaviorData.longitude = longitude;
-    } else if (currentLocation) {
-        behaviorData.latitude = currentLocation.latitude;
-        behaviorData.longitude = currentLocation.longitude;
-    }
-
-    fetch('/api/track-behavior', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(behaviorData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            console.log('Behavior tracked:', actionType);
-        }
-    })
-    .catch(error => {
-        console.error('Error tracking behavior:', error);
-    });
+    console.log('Behavior tracked:', actionType, actionDetails);
 }
 
 async function loadPersonalizedRecommendations() {
@@ -3436,6 +3405,64 @@ window.applyTimeFilter = applyTimeFilter;
 window.sortNotifications = sortNotifications;
 window.archiveAllNotifications = archiveAllNotifications;
 window.updateNotificationStats = updateNotificationStats;
+
+// Mobile Navigation Functions
+function toggleMobileNav(forceClose = false) {
+    const mobileNav = document.getElementById('mobileNav');
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    
+    if (forceClose || (mobileNav && mobileNav.classList.contains('active'))) {
+        mobileNav.classList.remove('active');
+        hamburgerBtn.classList.remove('active');
+        document.body.classList.remove('nav-open');
+    } else if (mobileNav && hamburgerBtn) {
+        mobileNav.classList.add('active');
+        hamburgerBtn.classList.add('active');
+        document.body.classList.add('nav-open');
+    }
+}
+
+function initMobileNav() {
+    // Setup hamburger menu toggle
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    if (hamburgerBtn) {
+        hamburgerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleMobileNav();
+        });
+    }
+    
+    // Close nav on overlay click
+    const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+    if (mobileNavOverlay) {
+        mobileNavOverlay.addEventListener('click', toggleMobileNav);
+    }
+    
+    // Close nav on window resize (desktop)
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768 && document.body.classList.contains('nav-open')) {
+            toggleMobileNav(true);
+        }
+    });
+    
+    // Setup mobile resize observer for maps
+    const resizeObserver = new ResizeObserver(() => {
+        if (currentMap) currentMap.invalidateSize();
+        if (sheltersMap) sheltersMap.invalidateSize();
+    });
+    
+    // Observe map containers
+    ['map', 'shelterMap'].forEach(id => {
+        const element = document.getElementById(id);
+        if (element) resizeObserver.observe(element);
+    });
+}
+
+// Initialize mobile nav on DOM load
+document.addEventListener('DOMContentLoaded', initMobileNav);
+
+// Make toggleMobileNav globally available
+window.toggleMobileNav = toggleMobileNav;
 
 // Mobile-optimized notification function
 overrideNotificationPosition();

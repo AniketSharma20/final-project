@@ -1425,7 +1425,7 @@
             }
         }
 
-        @media (max-width: 768px) {
+@media (max-width: 768px) {
             .nav-container {
                 padding: 0 16px;
             }
@@ -1442,12 +1442,19 @@
                 display: none;
             }
             
+            .nav-toggle {
+                order: 3;
+                margin-left: auto;
+            }
+            
             .hero {
                 padding: 100px 16px 60px;
+                min-height: 100vh;
             }
             
             .hero-title {
                 font-size: 2.25rem;
+                line-height: 1.15;
             }
             
             .hero-subtitle {
@@ -1457,27 +1464,40 @@
             .hero-stats {
                 flex-wrap: wrap;
                 gap: 24px;
+                justify-content: center;
             }
             
             .stat-item {
                 flex: 1;
-                min-width: 100px;
+                min-width: 120px;
                 text-align: center;
             }
             
             .hero-actions {
                 flex-direction: column;
                 align-items: center;
+                gap: 12px;
             }
             
             .btn {
                 width: 100%;
-                max-width: 280px;
+                max-width: 300px;
                 justify-content: center;
+            }
+            
+            .hero-trust {
+                flex-direction: column;
+                gap: 12px;
+                align-items: center;
+            }
+            
+            .features {
+                padding: 80px 16px;
             }
             
             .features-grid {
                 grid-template-columns: 1fr;
+                gap: 20px;
             }
             
             .testimonials-grid {
@@ -1486,6 +1506,7 @@
             
             .stats-grid {
                 grid-template-columns: 1fr 1fr;
+                gap: 24px;
             }
             
             .footer-links {
@@ -1499,15 +1520,22 @@
             
             .process-step {
                 gap: 24px;
+                flex-direction: column;
+                align-items: flex-start;
             }
             
             .step-icon {
                 width: 44px;
                 height: 44px;
+                order: -1;
             }
             
             .section-title {
                 font-size: 2rem;
+            }
+            
+            .cta {
+                padding: 80px 16px;
             }
             
             .cta h2 {
@@ -1517,6 +1545,99 @@
             .cta-btns {
                 flex-direction: column;
                 align-items: center;
+                gap: 16px;
+            }
+            
+            .cta-features {
+                flex-direction: column;
+                gap: 12px;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-container {
+                padding: 0 12px;
+            }
+            
+            .brand-icon {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .brand-name {
+                font-size: 1.25rem;
+            }
+            
+            .hero {
+                padding: 90px 12px 60px;
+            }
+            
+            .hero-title {
+                font-size: 1.875rem;
+                line-height: 1.2;
+            }
+            
+            .hero-subtitle {
+                font-size: 0.95rem;
+            }
+            
+            .hero-stats {
+                gap: 20px;
+            }
+            
+            .stat-item h3 {
+                font-size: 1.75rem;
+            }
+            
+            .hero-actions .btn {
+                max-width: 100%;
+                padding: 16px 24px;
+            }
+            
+            .features {
+                padding: 60px 12px;
+            }
+            
+            .section-title {
+                font-size: 1.75rem;
+            }
+            
+            .section-subtitle {
+                font-size: 1rem;
+            }
+            
+            .feature-card {
+                padding: 24px 20px;
+            }
+            
+            .feature-icon {
+                width: 52px;
+                height: 52px;
+                font-size: 1.25rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .stat-icon-box {
+                width: 56px;
+                height: 56px;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .cta h2 {
+                font-size: 1.75rem;
+            }
+            
+            .process-step {
+                padding-left: 0;
+                gap: 16px;
             }
         }
 
