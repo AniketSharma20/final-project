@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
     <title>SafeGuard - Women Security System | Advanced Protection</title>
     <meta name="description" content="SafeGuard - AI-powered women security app with emergency alerts, live location tracking, and 24/7 protection.">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -60,7 +60,9 @@
         }
 
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
             background: var(--gradient-dark);
             color: var(--gray-300);
             line-height: 1.6;
@@ -247,6 +249,82 @@
         .nav-btn.signup:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+        }
+
+        /* Mobile Nav Toggle */
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-toggle:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.05);
+        }
+
+        .nav-toggle i {
+            font-size: 1.2rem;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        /* Mobile Menu Styles */
+        @media (max-width: 768px) {
+            .nav-toggle {
+                display: flex;
+            }
+
+            #nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(2, 6, 23, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 20px 0;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                gap: 0;
+                box-shadow: var(--shadow-2xl);
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            #nav-links.mobile-open {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .nav-link, .nav-btn {
+                min-height: 48px;
+                padding: 16px 24px;
+                width: 100%;
+                justify-content: flex-start;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .nav-btn.login {
+                border: none;
+            }
+        }
+
+        /* Touch targets for all buttons */
+        .btn, .nav-link, .nav-btn, .nav-toggle {
+            min-height: 44px;
+            touch-action: manipulation;
         }
 
         /* Hero Section */
@@ -1476,7 +1554,10 @@
                     <span class="brand-tagline">Women's Security</span>
                 </div>
             </a>
-            <div class="nav-links">
+<div class="nav-toggle" id="nav-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="nav-links" id="nav-links">
                 <a href="#features" class="nav-link">Features</a>
                 <a href="#how-it-works" class="nav-link">How It Works</a>
                 <a href="#testimonials" class="nav-link">Reviews</a>
@@ -1888,7 +1969,48 @@
                         block: 'start'
                     });
                 }
+                // Close mobile menu on link click
+                const navLinks = document.getElementById('nav-links');
+                if (navLinks && navLinks.classList.contains('mobile-open')) {
+                    navLinks.classList.remove('mobile-open');
+                }
             });
+        });
+
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggle = document.getElementById('nav-toggle');
+            const navLinks = document.getElementById('nav-links');
+            if (toggle && navLinks) {
+                toggle.addEventListener('click', function() {
+                    navLinks.classList.toggle('mobile-open');
+                });
+
+                // Close menu on outside click
+                document.addEventListener('click', function(e) {
+                    if (!toggle.contains(e.target) && !navLinks.contains(e.target)) {
+                        navLinks.classList.remove('mobile-open');
+                    }
+                });
+            }
+        });
+
+        // Debounced scroll listener for better mobile perf
+        let ticking = false;
+        function updateNav() {
+            const nav = document.getElementById('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+            ticking = false;
+        }
+        window.addEventListener('scroll', function() {
+            if (!ticking) {
+                requestAnimationFrame(updateNav);
+                ticking = true;
+            }
         });
     </script>
 </body>

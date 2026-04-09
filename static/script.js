@@ -1548,6 +1548,12 @@ function displaySheltersOnMap(shelters) {
             iconAnchor: [12, 12]
         });
         
+        const popupOptions = {
+            maxWidth: isMobile() ? '90vw' : '400px',
+            maxHeight: '70vh',
+            closeButton: true,
+            autoPanPadding: [10, 10]
+        };
         const marker = L.marker([shelter.latitude, shelter.longitude], { icon: customIcon })
             .addTo(sheltersMap)
             .bindPopup(`
@@ -1567,7 +1573,7 @@ function displaySheltersOnMap(shelters) {
                         </button>
                     </div>
                 </div>
-            `);
+            `, popupOptions);
     });
 }
 
