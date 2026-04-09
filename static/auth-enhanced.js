@@ -243,6 +243,10 @@ class AuthSystem {
                 body: JSON.stringify({ username, pattern })
             });
 
+            if (!response.ok) {
+                throw new Error(`Server returned ${response.status} ${response.statusText}`);
+            }
+
             const result = await response.json();
             
             if (result.success) {
@@ -252,7 +256,7 @@ class AuthSystem {
                 this.showMessage(result.message, 'error');
             }
         } catch (error) {
-            this.showMessage('Network error. Please try again.', 'error');
+            this.showMessage(`Network error: ${error.message}`, 'error');
         } finally {
             this.hideLoading();
         }
@@ -301,6 +305,10 @@ class AuthSystem {
                 body: JSON.stringify(data)
             });
 
+            if (!response.ok) {
+                throw new Error(`Server returned ${response.status} ${response.statusText}`);
+            }
+
             const result = await response.json();
             
             if (result.success) {
@@ -309,7 +317,7 @@ class AuthSystem {
                 this.showMessage(result.message, 'error');
             }
         } catch (error) {
-            this.showMessage('Network error. Please try again.', 'error');
+            this.showMessage(`Network error: ${error.message}`, 'error');
         } finally {
             // Reset button state
             if (submitBtn) {
