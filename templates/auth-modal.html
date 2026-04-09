@@ -408,8 +408,8 @@
 </div>
 
 <!-- Enhanced Pattern Lock Script -->
-<script src="{{ url_for('static', filename='simple_working_pattern_lock.js') }}"></script>
-<script src="{{ url_for('static', filename='auth-enhanced.js') }}"></script>
+<script src="{{ url_for('static', filename='simple_working_pattern_lock.js') }}?v=2"></script>
+<script src="{{ url_for('static', filename='auth-enhanced.js') }}?v=2"></script>
 
 <script>
 // Enhanced Modal-specific functionality
@@ -608,9 +608,17 @@ class ModalAuthHandler {
             
             const response = await fetch('/login-pattern', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': '69420',
+                    'bypass-tunnel-reminder': 'true'
+                },
                 body: JSON.stringify({ username, pattern })
             });
+
+            if (!response.ok) {
+                throw new Error(`Server returned ${response.status} ${response.statusText}`);
+            }
 
             const result = await response.json();
             
@@ -621,7 +629,7 @@ class ModalAuthHandler {
                 this.showMessage(result.message, 'error');
             }
         } catch (error) {
-            this.showMessage('Network error. Please try again.', 'error');
+            this.showMessage(`Network error: ${error.message}`, 'error');
         } finally {
             this.hideLoading();
         }
@@ -655,9 +663,17 @@ class ModalAuthHandler {
             const endpoint = isLogin ? '/login' : '/register';
             const response = await fetch(endpoint, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': '69420',
+                    'bypass-tunnel-reminder': 'true'
+                },
                 body: JSON.stringify(data)
             });
+
+            if (!response.ok) {
+                throw new Error(`Server returned ${response.status} ${response.statusText}`);
+            }
 
             const result = await response.json();
             
@@ -667,7 +683,7 @@ class ModalAuthHandler {
                 this.showMessage(result.message, 'error');
             }
         } catch (error) {
-            this.showMessage('Network error. Please try again.', 'error');
+            this.showMessage(`Network error: ${error.message}`, 'error');
         } finally {
             // Reset button state
             if (submitBtn) {

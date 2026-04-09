@@ -352,8 +352,8 @@
     </main>
 
     <!-- JavaScript -->
-    <script src="{{ url_for('static', filename='simple_working_pattern_lock.js') }}"></script>
-    <script src="{{ url_for('static', filename='auth-enhanced.js') }}"></script>
+    <script src="{{ url_for('static', filename='simple_working_pattern_lock.js') }}?v=2"></script>
+    <script src="{{ url_for('static', filename='auth-enhanced.js') }}?v=2"></script>
     <script>
         // Sign Up Page specific functionality
         class SignUpPage {
@@ -645,7 +645,11 @@
 
                     const response = await fetch('/register', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'ngrok-skip-browser-warning': '69420',
+                            'bypass-tunnel-reminder': 'true'
+                        },
                         body: JSON.stringify(data)
                     });
 

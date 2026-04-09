@@ -208,8 +208,8 @@
     </main>
 
     <!-- JavaScript -->
-    <script src="{{ url_for('static', filename='simple_working_pattern_lock.js') }}"></script>
-    <script src="{{ url_for('static', filename='auth-enhanced.js') }}"></script>
+    <script src="{{ url_for('static', filename='simple_working_pattern_lock.js') }}?v=2"></script>
+    <script src="{{ url_for('static', filename='auth-enhanced.js') }}?v=2"></script>
     <script>
         // Sign In Page specific functionality
         class SignInPage {
@@ -323,7 +323,11 @@
 
                     const response = await fetch('/login-pattern', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'ngrok-skip-browser-warning': '69420',
+                            'bypass-tunnel-reminder': 'true'
+                        },
                         body: JSON.stringify({ username, pattern })
                     });
 
@@ -364,7 +368,11 @@
 
                     const response = await fetch('/login', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'ngrok-skip-browser-warning': '69420',
+                            'bypass-tunnel-reminder': 'true'
+                        },
                         body: JSON.stringify(data)
                     });
 

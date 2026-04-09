@@ -1875,6 +1875,17 @@ def update_emergency_contacts():
     finally:
         conn.close()
 
+@app.after_request
+def add_header(response):
+    """
+    Force browsers to circumvent aggressive mobile caching.
+    Ensures that every device immediately receives the newest hotfixes.
+    """
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '-1'
+    return response
+
 if __name__ == '__main__':
     init_db()
     app.run(debug=True, host='0.0.0.0', port=5000)

@@ -239,7 +239,11 @@ class AuthSystem {
             
             const response = await fetch('/login-pattern', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': '69420',
+                    'bypass-tunnel-reminder': 'true'
+                },
                 body: JSON.stringify({ username, pattern })
             });
 
@@ -301,7 +305,11 @@ class AuthSystem {
             const endpoint = isLogin ? '/login' : '/register';
             const response = await fetch(endpoint, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': '69420',
+                    'bypass-tunnel-reminder': 'true'
+                },
                 body: JSON.stringify(data)
             });
 
