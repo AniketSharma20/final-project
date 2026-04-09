@@ -118,15 +118,26 @@ body {
 
 /* Enhanced Header */
 .dashboard-header {
-    background: rgba(255, 255, 255, 0.95);
-    padding: clamp(12px, 4vw, 20px) clamp(20px, 5vw, 30px);
-    display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
+    background: rgba(255, 255, 255, 0.75);
+    padding: clamp(10px, 2vw, 15px) clamp(20px, 5vw, 40px);
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    position: relative;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    position: sticky;
+    top: 0;
+    z-index: 1001;
+}
+
+@media (min-width: 769px) {
+    .header-center {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+    }
 }
 
 /* Mobile Header Enhancements */

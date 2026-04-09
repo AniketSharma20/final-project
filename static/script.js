@@ -3773,3 +3773,21 @@ function clearCustomSMS() {
     document.getElementById('customSMSForm').reset();
     updateCharCounter();
 }
+
+// Language Toggle and UI handlers
+function toggleLanguageDropdown() {
+    const dropdown = document.getElementById('languageDropdown');
+    if (dropdown) {
+        dropdown.classList.toggle('show');
+    }
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(event) {
+    const langDropdown = document.getElementById('languageDropdown');
+    const langBtn = document.getElementById('languageBtn');
+    
+    if (langDropdown && langBtn && !langDropdown.contains(event.target) && !langBtn.contains(event.target)) {
+        langDropdown.classList.remove('show');
+    }
+});
