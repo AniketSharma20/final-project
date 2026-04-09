@@ -564,7 +564,7 @@ function clearMessage() {
 // to properly support pattern lock authentication
 
 // Enhanced Dashboard Navigation
-function showSection(sectionId) {
+function showSection(sectionId, pushState = true) {
     // Hide all sections
     const sections = document.querySelectorAll('.content-section');
     sections.forEach(section => {
@@ -648,9 +648,24 @@ function showSection(sectionId) {
             break;
     }
     
+    // Update history state
+    if (pushState && window.location.hash.substring(1) !== sectionId) {
+        history.pushState({ section: sectionId }, '', `#${sectionId}`);
+    }
+
     // Update activity log
     addToActivity(`Switched to ${sectionId.replace('-', ' ')} section`);
 }
+
+// Handle browser back button
+window.addEventListener('popstate', function(event) {
+    if (event.state && event.state.section) {
+        showSection(event.state.section, false);
+    } else {
+        const hash = window.location.hash.substring(1) || 'overview';
+        showSection(hash, false);
+    }
+});
 
 function addToActivity(activity) {
     const activityList = document.getElementById('activityList');
@@ -1207,6 +1222,14 @@ async function sendLocationToServer() {
         
         if (!response.ok) {
             console.error('Failed to send location to server');
+            if (response.status === 401) {
+                console.warn('Unauthorized (401). Session may have expired or cross-domain cookie missing.');
+                if (isTracking && typeof stopLocationTracking === 'function') {
+                    stopLocationTracking();
+                }
+                showNotification('Session expired. Please sign in again or refresh.', 'error');
+                // Could optionally redirect: window.location.href = '/';
+            }
         }
     } catch (error) {
         console.error('Error sending location:', error);
@@ -2646,11 +2669,14 @@ function refreshTips() {
 function toggleNotifications() {
     const notificationsPanel = document.getElementById('notificationsPanel');
     if (notificationsPanel) {
-        notificationsPanel.classList.toggle('active');
+        const isActive = notificationsPanel.classList.toggle('active');
         
-        // Add animation class
-        if (notificationsPanel.classList.contains('active')) {
-            notificationsPanel.style.animation = 'slideInRight 0.3s ease forwards';
+        if (isActive) {
+            // Re-load notifications when opening
+            loadNotifications();
+            trackUserBehavior('notification_panel_open', 'Opened notifications panel');
+        } else {
+            trackUserBehavior('notification_panel_close', 'Closed notifications panel');
         }
     }
 }
@@ -3199,6 +3225,7 @@ function addNotificationToPanel(title, message, type, priority = 'medium', creat
     
     notificationItem.innerHTML = `
         <div class="unread-indicator"></div>
+        <div class="notification-glow"></div>
         <div class="notification-icon-wrapper ${iconWrapperClass}">
             <div class="notification-icon">
                 <i class="fas fa-${icon}"></i>
@@ -3217,6 +3244,7 @@ function addNotificationToPanel(title, message, type, priority = 'medium', creat
                     </span>
                 </div>
             </div>
+            <h5 class="notification-title">${title}</h5>
             <p class="notification-message">${message}</p>
             <div class="notification-footer-row">
                 <span class="notification-category">
@@ -3224,13 +3252,13 @@ function addNotificationToPanel(title, message, type, priority = 'medium', creat
                     ${type.replace('_', ' ')}
                 </span>
                 <div class="notification-actions-inline">
-                    <button class="action-inline-btn" onclick="markNotificationAsRead(this)" title="Mark as read">
+                    <button class="action-inline-btn" onclick="markNotificationAsRead(this); event.stopPropagation();" title="Mark as read">
                         <i class="fas fa-check"></i>
                     </button>
-                    <button class="action-inline-btn" onclick="performNotificationAction(this, '${type}')" title="View">
+                    <button class="action-inline-btn" onclick="performNotificationAction(this, '${type}'); event.stopPropagation();" title="View">
                         <i class="fas fa-eye"></i>
                     </button>
-                    <button class="action-inline-btn" onclick="dismissNotification(this)" title="Dismiss">
+                    <button class="action-inline-btn" onclick="dismissNotification(this); event.stopPropagation();" title="Dismiss">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -3241,9 +3269,7 @@ function addNotificationToPanel(title, message, type, priority = 'medium', creat
     
     // Add click handler
     notificationItem.onclick = function(e) {
-        if (!e.target.closest('.notification-actions-inline') && !e.target.closest('.action-inline-btn')) {
-            openNotification(this);
-        }
+        openNotification(this);
     };
     
     // Insert at the top
@@ -3411,14 +3437,20 @@ function toggleMobileNav(forceClose = false) {
     const mobileNav = document.getElementById('mobileNav');
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     
-    if (forceClose || (mobileNav && mobileNav.classList.contains('active'))) {
-        mobileNav.classList.remove('active');
-        hamburgerBtn.classList.remove('active');
+    if (forceClose) {
+        if (mobileNav) mobileNav.classList.remove('active');
+        if (hamburgerBtn) hamburgerBtn.classList.remove('active');
         document.body.classList.remove('nav-open');
     } else if (mobileNav && hamburgerBtn) {
-        mobileNav.classList.add('active');
-        hamburgerBtn.classList.add('active');
-        document.body.classList.add('nav-open');
+        if (mobileNav.classList.contains('active')) {
+            mobileNav.classList.remove('active');
+            hamburgerBtn.classList.remove('active');
+            document.body.classList.remove('nav-open');
+        } else {
+            mobileNav.classList.add('active');
+            hamburgerBtn.classList.add('active');
+            document.body.classList.add('nav-open');
+        }
     }
 }
 
@@ -3592,34 +3624,30 @@ function loadEmergencyContacts() {
 function displayEmergencyContacts(contacts) {
     console.log('Displaying emergency contacts:', contacts);
     
-    // Try multiple possible container IDs
-    let container = document.getElementById('currentContacts');
-    console.log('Container currentContacts found:', !!container);
+    const containers = document.querySelectorAll('.current-contacts, #currentContacts, #emergencyCurrentContacts, .contacts-list');
     
-    if (!container) {
-        container = document.getElementById('emergencyCurrentContacts');
-        console.log('Container emergencyCurrentContacts found:', !!container);
-    }
-    if (!container) return;
-    
-    if (contacts.length === 0) {
-        container.innerHTML = '<p class="no-contacts">No emergency contacts set up</p>';
-        return;
-    }
-    
-    const contactsHTML = contacts.map(contact => `
-        <div class="user-contact-card">
-            <div class="contact-info">
-                <h5>${contact.name}</h5>
-                <span class="contact-number">${contact.phone}</span>
+    const htmlContent = contacts.length === 0 ? 
+        '<p class="no-contacts">No emergency contacts set up</p>' :
+        contacts.map(contact => `
+            <div class="user-contact-card">
+                <div class="contact-info">
+                    <h5>${contact.name}</h5>
+                    <span class="contact-number">${contact.phone}</span>
+                </div>
+                <button class="contact-call-btn" onclick="callEmergency('${contact.phone}')">
+                    <i class="fas fa-phone"></i>
+                </button>
             </div>
-            <button class="contact-call-btn" onclick="callEmergency('${contact.phone}')">
-                <i class="fas fa-phone"></i>
-            </button>
-        </div>
-    `).join('');
+        `).join('');
+        
+    containers.forEach(container => {
+        // Ensure this container is actually meant for contacts 
+        // by verifying ID or specific classes based on HTML structure
+        if(container.id === 'currentContacts' || container.id === 'emergencyCurrentContacts') {
+            container.innerHTML = htmlContent;
+        }
+    });
     
-    container.innerHTML = contactsHTML;
     console.log('Emergency contacts displayed successfully');
 }
 
@@ -3772,6 +3800,110 @@ function sendCustomSMS(event) {
 function clearCustomSMS() {
     document.getElementById('customSMSForm').reset();
     updateCharCounter();
+}
+
+function testSMSGatewayWithPrompt() {
+    const testNumber = prompt("Enter a phone number to send a test SMS to (e.g., +91XXXXXXXXXX):");
+    if (!testNumber) return;
+
+    fetch('/api/sms/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ test_number: testNumber })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Test SMS sent successfully!', 'success');
+            showSMSHistory(); 
+        } else {
+            showNotification(data.error || 'Failed to send test SMS', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error in test SMS:', error);
+        showNotification('Error sending test SMS', 'error');
+    });
+}
+
+function sendLocationEmergencySMS() {
+    if (!navigator.geolocation) {
+        showNotification('Geolocation is not supported by your browser', 'error');
+        return;
+    }
+
+    if (!confirm("Send your current location to all emergency contacts?")) {
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(position => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        
+        const message = `EMERGENCY ALERT: I need help immediately. My current location is: https://maps.google.com/?q=${lat},${lng}`;
+        
+        fetch('/api/sms/send-emergency', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: message }) 
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('Location emergency SMS sent successfully', 'success');
+                showSMSHistory();
+            } else {
+                showNotification(data.error || 'Failed to send location SMS', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error sending location SMS:', error);
+            showNotification('Error sending location SMS', 'error');
+        });
+    }, error => {
+        showNotification('Could not retrieve your location. Check GPS permissions.', 'error');
+    });
+}
+
+function showSMSHistory() {
+    const statusSection = document.getElementById('smsStatusSection');
+    const messagesContainer = document.getElementById('smsStatusMessages');
+    
+    if (statusSection && messagesContainer) {
+        statusSection.style.display = 'block';
+        statusSection.scrollIntoView({ behavior: 'smooth' });
+        messagesContainer.innerHTML = '<p>Loading history...</p>';
+        
+        fetch('/api/sms/history')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.history && data.history.length > 0) {
+                        const historyHTML = data.history.map(sms => `
+                            <div class="sms-history-item status-${sms.status}">
+                                <div class="sms-history-header">
+                                    <span class="sms-type">${sms.type.toUpperCase()}</span>
+                                    <span class="sms-time">${new Date(sms.timestamp).toLocaleString()}</span>
+                                </div>
+                                <div class="sms-recipient">To: ${sms.recipient}</div>
+                                <div class="sms-body">${sms.message}</div>
+                                <div class="sms-status-badge ${sms.status}">${sms.status}</div>
+                                ${sms.error_message ? `<div class="sms-error">${sms.error_message}</div>` : ''}
+                            </div>
+                        `).join('');
+                        messagesContainer.innerHTML = historyHTML;
+                    } else {
+                        messagesContainer.innerHTML = '<p>No SMS history found.</p>';
+                    }
+                } else {
+                    messagesContainer.innerHTML = `<p class="text-danger">Failed to load history: ${data.error}</p>`;
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching SMS history:", error);
+                messagesContainer.innerHTML = '<p class="text-danger">Error loading SMS history.</p>';
+            });
+    }
 }
 
 // Language Toggle and UI handlers

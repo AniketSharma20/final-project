@@ -405,6 +405,23 @@ class AIAssistant:
         except ImportError:
             self.available = False
             print("AI Assistant packages not available. Text-based assistant will be used.")
+            
+        # Configure Google Generative AI integration for dynamic conversations
+        self.gemini_model = None
+        try:
+            import google.generativeai as genai
+            gemini_key = os.getenv('GEMINI_API_KEY')
+            if gemini_key:
+                genai.configure(api_key=gemini_key)
+                # Using the latest lightweight fast model
+                self.gemini_model = genai.GenerativeModel('gemini-1.5-flash')
+                print("Gemini API successfully configured for AIAssistant.")
+            else:
+                print("GEMINI_API_KEY not found in environment. Defaulting to fallback offline dictionary.")
+        except ImportError:
+            print("google-generativeai package not installed. Defaulting to fallback offline dictionary.")
+        except Exception as e:
+            print(f"Failed to initialize Gemini API: {e}")
         
         # Comprehensive knowledge base for safety questions
         self.knowledge_base = {
@@ -493,6 +510,26 @@ class AIAssistant:
         
     def get_response(self, query):
         """Get AI response for a user query"""
+        # Try to use Gemini generative LLM first if available
+        if self.gemini_model:
+            try:
+                system_instruction = (
+                    "You are SafeGuard AI, an empathetic, supportive, and knowledgeable women's safety assistant. "
+                    "Your goal is to provide concise, practical safety advice, emotional support, and clear emergency instructions. "
+                    "If the user is in immediate danger, advise them to use the SOS button or call emergency services (1091 or 100) immediately. "
+                    "Keep your responses relatively brief, clear, and action-oriented for a mobile dashboard."
+                )
+                
+                # We inject the system instruction alongside the user's query
+                prompt = f"{system_instruction}\n\nUser Question: {query}"
+                response = self.gemini_model.generate_content(prompt)
+                
+                if response and response.text:
+                    return response.text
+            except Exception as e:
+                print(f"Gemini API request failed ({e}). Falling back to local database.")
+
+        # Fallback to local knowledge base
         query_lower = query.lower()
         
         # Check each category

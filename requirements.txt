@@ -13,3 +13,5 @@ gunicorn
 # Optional packages for AI features (commented out for compatibility)
 # speech_recognition==3.10.0
 # pyttsx3==2.90
+google-generativeai
+# pyttsx3==2.90
