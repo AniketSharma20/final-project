@@ -5650,9 +5650,18 @@ body {
         grid-template-columns: repeat(2, 1fr);
     }
     
-    /* Emergency buttons in row */
+    /* Emergency buttons - single column on small mobile to prevent overlap */
     .emergency-buttons {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .emergency-btn {
+        padding: 15px;
+    }
+
+    .btn-content {
+        gap: 10px;
     }
     
     /* Tips grid 2 columns */

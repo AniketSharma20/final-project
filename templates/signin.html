@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Sign In - SafeGuard | Women Security System</title>
     <meta name="description" content="Sign in to your SafeGuard account to access your personal security dashboard and emergency features.">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <link rel="stylesheet" href="{{ url_for('static', filename='landing-unified.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='auth-styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='pattern-lock-simple.css') }}">
@@ -208,8 +211,8 @@
     </main>
 
     <!-- JavaScript -->
-    <script src="{{ url_for('static', filename='simple_working_pattern_lock.js') }}?v=2"></script>
-    <script src="{{ url_for('static', filename='auth-enhanced.js') }}?v=2"></script>
+    <script src="{{ url_for('static', filename='pattern-lock-v2.js') }}?v=999"></script>
+    <script src="{{ url_for('static', filename='auth-v2.js') }}?v=999"></script>
     <script>
         // Sign In Page specific functionality
         class SignInPage {
@@ -323,6 +326,7 @@
 
                     const response = await fetch('/login-pattern', {
                         method: 'POST',
+                        cache: 'no-store',
                         headers: { 
                             'Content-Type': 'application/json',
                             'ngrok-skip-browser-warning': '69420',
@@ -368,6 +372,7 @@
 
                     const response = await fetch('/login', {
                         method: 'POST',
+                        cache: 'no-store',
                         headers: { 
                             'Content-Type': 'application/json',
                             'ngrok-skip-browser-warning': '69420',
@@ -474,5 +479,6 @@
             new SignInPage();
         });
     </script>
+    <div style="position: fixed; bottom: 5px; right: 5px; font-size: 8px; color: rgba(255,255,255,0.3); z-index: 9999;">v2.0.4-HOTFIX</div>
 </body>
 </html>

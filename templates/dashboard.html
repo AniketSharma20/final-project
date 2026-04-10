@@ -29,6 +29,13 @@
 
     <!-- Main Dashboard -->
     <div class="dashboard-container">
+        <!-- Dashboard Background Animations -->
+        <div class="dashboard-bg-animations">
+            <div class="blob blob-1"></div>
+            <div class="blob blob-2"></div>
+            <div class="blob blob-3"></div>
+        </div>
+
         <!-- Enhanced Header -->
         <header class="dashboard-header">
             <div class="header-left">
@@ -1309,21 +1316,20 @@
             }
         });
 
-        // Set language function
-        function setLanguage(lang) {
+        // Language Switching Function
+        function changeLanguage(lang) {
             if (window.translator) {
+                // Trigger the translation engine
                 window.translator.setLanguage(lang);
                 
-                // Update dropdown UI - remove active from all and add to selected
+                // Update dropdown UI styling
                 const options = document.querySelectorAll('.lang-option');
                 options.forEach(opt => {
                     opt.classList.remove('active');
-                    // Reset icon to globe
                     const icon = opt.querySelector('i');
                     if (icon) {
                         icon.className = 'fas fa-globe';
                     }
-                    // Add active class and check icon to selected
                     if (opt.dataset.lang === lang) {
                         opt.classList.add('active');
                         if (icon) {
@@ -1332,17 +1338,27 @@
                     }
                 });
                 
-                // Update button text
-                const langText = { 'en': 'English', 'hi': 'हिंदी', 'ta': 'தமிழ்', 'te': 'తెలుగు' };
-                document.getElementById('currentLangText').textContent = langText[lang];
+                // Update header text
+                const langLabels = { 'en': 'English', 'hi': 'हिंदी', 'ta': 'தமிழ்', 'te': 'తెలుగు' };
+                const currentLangText = document.getElementById('currentLangText');
+                if (currentLangText) {
+                    currentLangText.textContent = langLabels[lang] || 'English';
+                }
                 
-                // Close dropdown
-                document.getElementById('languageDropdown').classList.remove('show');
+                // Close the dropdown
+                const dropdown = document.getElementById('languageDropdown');
+                if (dropdown) dropdown.classList.remove('show');
             }
         }
 
         // Initialize language selector on page load
         document.addEventListener('DOMContentLoaded', function() {
+            // Apply saved language from translator
+            if (window.translator) {
+                const savedLang = window.translator.getLanguage();
+                changeLanguage(savedLang);
+            }
+
             // Check for deep links / history state
             const hash = window.location.hash.substring(1);
             if (hash) {

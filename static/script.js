@@ -368,15 +368,19 @@ function goToTip(index) {
 function animateTipChange() {
     const banner = document.querySelector('.safety-tip-banner');
     if (banner) {
-        // Add fade out animation
-        banner.style.animation = 'tipContentFade 0.3s ease reverse forwards';
+        // Add fade out class defined in dashboard-professional.css
+        banner.classList.add('fade-out');
         
         setTimeout(() => {
             renderSafetyTip();
-        }, 300);
+            // The newly rendered tip will not have the fade-out class, 
+            // so it will naturally appear (with its own CSS entry animation if defined)
+        }, 400); 
+    } else {
+        renderSafetyTip();
     }
     
-    // Reset interval
+    // Reset rotation interval to prevent double-skipping
     startTipRotation();
 }
 
@@ -598,7 +602,23 @@ function showSection(sectionId, pushState = true) {
     }
     
     // Close mobile nav if open
-    toggleMobileNav(true);
+    if (isMobile()) {
+        const nav = document.querySelector('.dashboard-nav');
+        if (nav) nav.classList.remove('active');
+        const overlay = document.querySelector('.mobile-nav-overlay');
+        if (overlay) overlay.classList.remove('active');
+    }
+
+    // Leaflet Map Fix: Invalidate size after section becomes visible
+    // This solves the "Blank Map" issue on mobile
+    setTimeout(() => {
+        if (currentMap) {
+            currentMap.invalidateSize();
+        }
+        if (sheltersMap) {
+            sheltersMap.invalidateSize();
+        }
+    }, 100);
     
     // Initialize or update content based on section
     switch(sectionId) {
@@ -1833,16 +1853,6 @@ function initiateFakeCall() {
     }, 3000);
 }
 
-function initiateFakeCall() {
-    showNotification('📞 Initiating fake call...', 'info');
-    addToActivity('Initiated fake call');
-    
-    // Simulate incoming call
-    setTimeout(() => {
-        showCallNotification();
-    }, 3000);
-}
-
 function showCallNotification() {
     // Play ringtone sound using Web Audio API
     playRingtone();
@@ -2450,7 +2460,7 @@ async function submitComplaint(event) {
             showNotification('❌ Failed to submit complaint. Please try again.', 'error');
         }
     } catch (error) {
-        showNotification('❌ Network error. Please try again.', 'error');
+        showNotification(`❌ Network error: ${error.message}`, 'error');
     }
 }
 
@@ -3844,21 +3854,32 @@ function sendLocationEmergencySMS() {
         
         fetch('/api/sms/send-emergency', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: message }) 
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                custom_message: message
+            })
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
-                showNotification('Location emergency SMS sent successfully', 'success');
+                showNotification(`Emergency SMS sent to ${data.successful_sends} of ${data.total_contacts} contacts!`, 'success');
                 showSMSHistory();
             } else {
-                showNotification(data.error || 'Failed to send location SMS', 'error');
+                // Specific warning for Vercel/Stateless environments
+                const errorMsg = data.error || 'Failed to send SMS';
+                showNotification(`${errorMsg}. (Note: If you're on Vercel, check if Twilio API keys are set)`, 'error');
             }
         })
         .catch(error => {
-            console.error('Error sending location SMS:', error);
-            showNotification('Error sending location SMS', 'error');
+            console.error('Error sending emergency SMS:', error);
+            showNotification('Network Error: Failed to reach the SMS gateway. Please check your connection.', 'error');
         });
     }, error => {
         showNotification('Could not retrieve your location. Check GPS permissions.', 'error');

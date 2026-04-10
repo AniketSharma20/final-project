@@ -408,8 +408,8 @@
 </div>
 
 <!-- Enhanced Pattern Lock Script -->
-<script src="{{ url_for('static', filename='simple_working_pattern_lock.js') }}?v=2"></script>
-<script src="{{ url_for('static', filename='auth-enhanced.js') }}?v=2"></script>
+<script src="{{ url_for('static', filename='pattern-lock-v2.js') }}?v=999"></script>
+<script src="{{ url_for('static', filename='auth-v2.js') }}?v=999"></script>
 
 <script>
 // Enhanced Modal-specific functionality
@@ -608,6 +608,7 @@ class ModalAuthHandler {
             
             const response = await fetch('/login-pattern', {
                 method: 'POST',
+                cache: 'no-store',
                 headers: { 
                     'Content-Type': 'application/json',
                     'ngrok-skip-browser-warning': '69420',
@@ -663,6 +664,7 @@ class ModalAuthHandler {
             const endpoint = isLogin ? '/login' : '/register';
             const response = await fetch(endpoint, {
                 method: 'POST',
+                cache: 'no-store',
                 headers: { 
                     'Content-Type': 'application/json',
                     'ngrok-skip-browser-warning': '69420',

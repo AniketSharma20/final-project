@@ -1076,7 +1076,7 @@ class LanguageTranslator {
         }
         
         // Update all language buttons
-        const buttons = document.querySelectorAll('.lang-btn');
+        const buttons = document.querySelectorAll('.lang-btn, .lang-option');
         buttons.forEach(btn => {
             btn.classList.remove('active');
             if (btn.dataset.lang === this.currentLanguage) {
