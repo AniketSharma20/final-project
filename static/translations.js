@@ -1007,7 +1007,12 @@ const translations = {
 // Language translations class
 class LanguageTranslator {
     constructor() {
-        this.currentLanguage = localStorage.getItem('safeguard_language') || 'en';
+        try {
+            this.currentLanguage = localStorage.getItem('safeguard_language') || 'en';
+        } catch (e) {
+            console.warn('Storage access blocked. Falling back to default language.');
+            this.currentLanguage = 'en';
+        }
         this.translations = translations;
     }
     
@@ -1028,7 +1033,11 @@ class LanguageTranslator {
     setLanguage(lang) {
         if (this.translations[lang]) {
             this.currentLanguage = lang;
-            localStorage.setItem('safeguard_language', lang);
+            try {
+                localStorage.setItem('safeguard_language', lang);
+            } catch (e) {
+                console.warn('Unable to save language preference to storage.');
+            }
             this.updatePageTranslations();
             this.updateLanguageSelector();
             return true;
@@ -1070,12 +1079,7 @@ class LanguageTranslator {
     
     // Update language selector UI
     updateLanguageSelector() {
-        const selector = document.getElementById('languageSelector');
-        if (selector) {
-            selector.value = this.currentLanguage;
-        }
-        
-        // Update all language buttons
+        // Update active state on lang-option buttons
         const buttons = document.querySelectorAll('.lang-btn, .lang-option');
         buttons.forEach(btn => {
             btn.classList.remove('active');
@@ -1083,6 +1087,13 @@ class LanguageTranslator {
                 btn.classList.add('active');
             }
         });
+
+        // Update the text shown in the header button
+        const langNames = { en: 'English', hi: 'हिंदी', ta: 'தமிழ்', te: 'తెలుగు' };
+        const currentLangText = document.getElementById('currentLangText');
+        if (currentLangText) {
+            currentLangText.textContent = langNames[this.currentLanguage] || 'English';
+        }
     }
     
     // Initialize language selector
@@ -1104,17 +1115,72 @@ class LanguageTranslator {
 window.translator = new LanguageTranslator();
 window.translator.initLanguageSelector();
 
+// ── LANGUAGE DROPDOWN TOGGLE ─────────────────────────────────
+function toggleLanguageDropdown() {
+    const dropdown = document.getElementById('languageDropdown');
+    const btn      = document.getElementById('languageBtn');
+    if (!dropdown || !btn) return;
+
+    const isOpen = dropdown.classList.contains('open');
+
+    // Close any open dropdown first
+    document.querySelectorAll('.header-language-dropdown.open').forEach(d => d.classList.remove('open'));
+
+    if (!isOpen) {
+        // On mobile (<=768px): force fixed positioning pinned to button coords
+        if (window.innerWidth <= 768) {
+            const rect = btn.getBoundingClientRect();
+            // Reset any inline styles first
+            dropdown.style.removeProperty('position');
+            dropdown.style.removeProperty('top');
+            dropdown.style.removeProperty('right');
+            dropdown.style.removeProperty('left');
+            // Apply fixed position dynamcally via style (CSS media query handles display)
+            dropdown.style.setProperty('position', 'fixed', 'important');
+            dropdown.style.setProperty('top',  (rect.bottom + 8) + 'px', 'important');
+            // Align right edge with button right edge, but stay in viewport
+            const rightFromViewport = window.innerWidth - rect.right;
+            dropdown.style.setProperty('right', Math.max(8, rightFromViewport) + 'px', 'important');
+            dropdown.style.setProperty('left', 'auto', 'important');
+        }
+
+        dropdown.classList.add('open');
+
+        // Close when tapping/clicking outside
+        setTimeout(() => {
+            document.addEventListener('click',      _closeLangDropdown, { once: true });
+            document.addEventListener('touchstart', _closeLangDropdown, { once: true, passive: true });
+        }, 20);
+    }
+}
+
+function _closeLangDropdown(e) {
+    const dropdown = document.getElementById('languageDropdown');
+    const btn      = document.getElementById('languageBtn');
+    if (dropdown && !dropdown.contains(e.target) && btn && !btn.contains(e.target)) {
+        dropdown.classList.remove('open');
+        // Clean up inline mobile styles
+        dropdown.style.removeProperty('position');
+        dropdown.style.removeProperty('top');
+        dropdown.style.removeProperty('right');
+        dropdown.style.removeProperty('left');
+    }
+}
+
 // Function to change language (called by buttons)
 function changeLanguage(lang) {
-    if (translator) {
-        translator.setLanguage(lang);
+    if (window.translator) {
+        window.translator.setLanguage(lang);
+        // Close dropdown after selection
+        const dropdown = document.getElementById('languageDropdown');
+        if (dropdown) dropdown.classList.remove('open');
     }
 }
 
 // Get translation for a key (global function)
 function translate(key) {
-    if (translator) {
-        return translator.t(key);
+    if (window.translator) {
+        return window.translator.t(key);
     }
     return key;
 }

@@ -7,9 +7,9 @@
 
 body {
     font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #070b14;
     min-height: 100vh;
-    color: #333;
+    color: #f1f5f9;
     overflow-x: hidden;
 }
 
@@ -433,7 +433,7 @@ body {
 .dashboard-main {
     flex: 1;
     padding: clamp(20px, 4vw, 30px);
-    background: #f8f9fa;
+    background: #f1f5f9;
     min-height: calc(100vh - 140px);
 }
 
@@ -455,9 +455,10 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #e9ecef;
+    margin-bottom: 28px;
+    padding-bottom: 0;
+    border-bottom: none;
+}
 }
 
 .section-header h3 {

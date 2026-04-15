@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Women Security System - Dashboard</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='dashboard-professional.css') }}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -29,12 +30,7 @@
 
     <!-- Main Dashboard -->
     <div class="dashboard-container">
-        <!-- Dashboard Background Animations -->
-        <div class="dashboard-bg-animations">
-            <div class="blob blob-1"></div>
-            <div class="blob blob-2"></div>
-            <div class="blob blob-3"></div>
-        </div>
+        <!-- Background (clean light theme) -->
 
         <!-- Enhanced Header -->
         <header class="dashboard-header">
@@ -247,11 +243,57 @@
                     </div>
                 </div>
 
-                <!-- Recommendations Section -->
+                <!-- Personalized Recommendations Section -->
                 <div class="recommendations-section">
-                    <h4><i class="fas fa-star"></i> <span data-translate="recommendations">Personalized Recommendations</span></h4>
-                    <div class="recommendations-list" id="recommendationsList">
-                        <!-- Recommendations will be loaded here dynamically -->
+                    <!-- Section Header -->
+                    <div class="rec-section-header">
+                        <div class="rec-header-left">
+                            <div class="rec-header-icon">
+                                <i class="fas fa-magic"></i>
+                            </div>
+                            <div class="rec-header-text">
+                                <h4 data-translate="recommendations">Personalized Recommendations</h4>
+                                <p class="rec-subtitle">AI-powered safety insights tailored for you</p>
+                            </div>
+                        </div>
+                        <div class="rec-header-right">
+                            <span class="rec-ai-badge"><i class="fas fa-robot"></i> AI Powered</span>
+                            <button class="rec-refresh-btn" onclick="refreshRecommendations()" title="Refresh Recommendations">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filter Tabs -->
+                    <div class="rec-filter-tabs">
+                        <button class="rec-tab active" data-filter="all" onclick="filterRecommendations('all', this)">
+                            <i class="fas fa-th-large"></i> All
+                        </button>
+                        <button class="rec-tab" data-filter="critical" onclick="filterRecommendations('critical', this)">
+                            <i class="fas fa-exclamation-triangle"></i> Critical
+                        </button>
+                        <button class="rec-tab" data-filter="safety" onclick="filterRecommendations('safety', this)">
+                            <i class="fas fa-shield-alt"></i> Safety
+                        </button>
+                        <button class="rec-tab" data-filter="tracking" onclick="filterRecommendations('tracking', this)">
+                            <i class="fas fa-map-marker-alt"></i> Tracking
+                        </button>
+                        <button class="rec-tab" data-filter="digital" onclick="filterRecommendations('digital', this)">
+                            <i class="fas fa-mobile-alt"></i> Digital
+                        </button>
+                    </div>
+
+                    <!-- Recommendations Grid -->
+                    <div class="recommendations-grid" id="recommendationsList">
+                        <!-- Cards rendered by JS -->
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="rec-footer">
+                        <span class="rec-footer-text" id="recFooterCount">Loading recommendations...</span>
+                        <button class="rec-dismiss-all" onclick="dismissAllRecommendations()">
+                            <i class="fas fa-check-double"></i> Mark all as read
+                        </button>
                     </div>
                 </div>
             </section>
@@ -495,8 +537,23 @@
                                 </div>
                             </div>
                             
-                            <div class="current-contacts" id="currentContacts">
-                                <!-- Current contacts will be loaded here -->
+                            <div class="current-contacts" id="currentContacts" style="margin-top: 15px; display: grid; gap: 10px;">
+                                <!-- Current contacts will be dynamically loaded here by loadContacts() -->
+                            </div>
+                            
+                            <!-- Add Contact Form -->
+                            <div class="add-contact-section" style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.2);">
+                                <h5 style="color: #e2e8f0; font-weight: 600; font-size: 0.95rem; margin-bottom: 12px;"><i class="fas fa-user-plus" style="margin-right: 8px; color: #818cf8;"></i> Add Personal Emergency Contact</h5>
+                                <form id="addContactForm" onsubmit="saveContact(event)" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                                    <input type="text" id="newContactName" placeholder="Name" required style="flex: 1; min-width: 120px; background: #111827; border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px; border-radius: 6px;">
+                                    <input type="tel" id="newContactPhone" placeholder="+91XXXXXXXXXX" required style="flex: 1.5; min-width: 140px; background: #111827; border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px; border-radius: 6px;">
+                                    <select id="newContactRelation" style="background: #111827; border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px; border-radius: 6px;">
+                                        <option value="Family">Family</option>
+                                        <option value="Friend">Friend</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <button type="submit" class="contact-call-btn" style="padding: 10px 20px; border-radius: 6px; cursor: pointer; border: none; background: #6366f1; color: white !important;"><i class="fas fa-save"></i> Save</button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -1388,11 +1445,6 @@
                 });
             }
         });
-
-        // Global changeLanguage function for backward compatibility
-        function changeLanguage(lang) {
-            setLanguage(lang);
-        }
 
         // SMS Gateway Functions
 

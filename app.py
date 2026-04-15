@@ -127,6 +127,19 @@ def init_db():
         )
     ''')
 
+    # Emergency Contacts table for user's trusted circle
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS user_contacts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            name TEXT NOT NULL,
+            phone TEXT NOT NULL,
+            relation TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users (id)
+        )
+    ''')
+
     # User behavior tracking table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS user_behavior (
@@ -1874,6 +1887,142 @@ def update_emergency_contacts():
         return jsonify({'success': False, 'error': f'Database error: {e}'}), 500
     finally:
         conn.close()
+
+# Initialize global SMS Gateway
+try:
+    sms_gateway = SMSGateway()
+except Exception as e:
+    print(f"SMSGateway global initialization failed: {e}")
+    sms_gateway = None
+
+# ---- CONTACTS API ----
+@app.route('/api/contacts', methods=['GET'])
+def get_contacts():
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    conn = sqlite3.connect(app.config.get('DATABASE', 'security_system.db'))
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, name, phone, relation FROM user_contacts WHERE user_id = ? ORDER BY created_at DESC', (session['user_id'],))
+    contacts = cursor.fetchall()
+    conn.close()
+    
+    return jsonify([{'id': c[0], 'name': c[1], 'phone': c[2], 'relation': c[3]} for c in contacts])
+
+@app.route('/api/contacts', methods=['POST'])
+def add_contact():
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    data = request.get_json()
+    name = data.get('name')
+    phone = data.get('phone')
+    relation = data.get('relation', 'Contact')
+    
+    if not name or not phone:
+        return jsonify({'error': 'Name and phone are required'}), 400
+        
+    conn = sqlite3.connect(app.config.get('DATABASE', 'security_system.db'))
+    cursor = conn.cursor()
+    try:
+        cursor.execute('INSERT INTO user_contacts (user_id, name, phone, relation) VALUES (?, ?, ?, ?)',
+                       (session['user_id'], name, phone, relation))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'error': str(e)}), 500
+    finally:
+        conn.close()
+        
+    return jsonify({'success': True, 'message': 'Contact added successfully!'})
+
+@app.route('/api/contacts/<int:contact_id>', methods=['DELETE'])
+def delete_contact(contact_id):
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+        
+    conn = sqlite3.connect(app.config.get('DATABASE', 'security_system.db'))
+    cursor = conn.cursor()
+    try:
+        cursor.execute('DELETE FROM user_contacts WHERE id = ? AND user_id = ?', (contact_id, session['user_id']))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        return jsonify({'error': str(e)}), 500
+    finally:
+        conn.close()
+        
+    return jsonify({'success': True})
+
+# ---- REAL SMS & VOICE APIs ----
+@app.route('/api/sms/send', methods=['POST'])
+def send_real_sms():
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+        
+    data = request.get_json()
+    message = data.get('message', '')
+    recipient_type = data.get('recipient_type') # 'all_contacts' or 'custom'
+    recipient_phone = data.get('recipient_phone')
+    
+    if not sms_gateway:
+        return jsonify({'success': False, 'error': 'SMS Gateway is not configured.'}), 500
+        
+    if recipient_type == 'custom' and recipient_phone:
+        result = sms_gateway.send_emergency_sms(recipient_phone, message, session['user_id'])
+        return jsonify(result)
+        
+    elif recipient_type == 'all_contacts':
+        conn = sqlite3.connect(app.config.get('DATABASE', 'security_system.db'))
+        cursor = conn.cursor()
+        cursor.execute("SELECT phone FROM user_contacts WHERE user_id = ?", (session['user_id'],))
+        contacts = [row[0] for row in cursor.fetchall()]
+        conn.close()
+        
+        if not contacts:
+            return jsonify({'success': False, 'error': 'No emergency contacts found. Please add contacts first.'})
+            
+        results = sms_gateway.send_bulk_emergency_alert(contacts, message, session['user_id'])
+        return jsonify({'success': True, 'dispatched': len(results), 'results': results})
+        
+    return jsonify({'success': False, 'error': 'Invalid request parameters'})
+
+@app.route('/api/calls/make', methods=['POST'])
+def make_real_call():
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+        
+    data = request.get_json()
+    target_phone = data.get('phone')
+    call_type = data.get('type', 'emergency') # 'fake' or 'emergency'
+    
+    account_sid = os.getenv('TWILIO_ACCOUNT_SID')
+    auth_token = os.getenv('TWILIO_AUTH_TOKEN')
+    twilio_num = os.getenv('TWILIO_PHONE_NUMBER')
+    
+    if not (account_sid and auth_token and twilio_num):
+        return jsonify({'success': False, 'error': 'Twilio API Keys missing from environment config.'})
+        
+    try:
+        from twilio.rest import Client
+        client = Client(account_sid, auth_token)
+        
+        # Decide TwiML based on call_type
+        if call_type == 'fake':
+            twiml = '<Response><Say voice="alice">Hello, I am calling you regarding the meeting earlier. Please let me know when you are free.</Say></Response>'
+        else:
+            twiml = '<Response><Say voice="alice">EMERGENCY ALERT! A user of SafeGuard has indicated they are in danger and requested immediate assistance.</Say></Response>'
+            
+        call = client.calls.create(
+            twiml=twiml,
+            to=target_phone,
+            from_=twilio_num
+        )
+        return jsonify({'success': True, 'call_sid': call.sid, 'status': call.status})
+        
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
 
 @app.after_request
 def add_header(response):
