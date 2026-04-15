@@ -743,23 +743,33 @@ class SMSGateway:
             else:
                 phone = clean_number
             
-            url = "https://www.fast2sms.com/dev/wallet-v2"
+            # The correct endpoint for sending messages in Fast2SMS is bulkV2
+            url = "https://www.fast2sms.com/dev/bulkV2"
             
             headers = {
                 'authorization': self.fast2sms_api_key,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/x-www-form-urlencoded'
             }
             
             payload = {
                 'sender_id': 'FSTSMS',
                 'message': message[:160],  # SMS character limit
                 'language': 'english',
-                'route': self.fast2sms_route,
+                'route': 'q', # 'q' is Quick route.
                 'numbers': phone
             }
             
-            response = requests.post(url, json=payload, headers=headers, timeout=30)
-            result = response.json()
+            response = requests.post(url, data=payload, headers=headers, timeout=30)
+            
+            # Print response text for debugging before parsing
+            print(f"Fast2SMS Response: {response.text}")
+            
+            try:
+                result = response.json()
+            except Exception as json_err:
+                error_msg = f"Fast2SMS API returned non-JSON response. Status: {response.status_code}"
+                self._update_sms_status(sms_id, 'failed', None, error_msg)
+                return {'success': False, 'error': error_msg}
             
             if result.get('return'):
                 self._update_sms_status(sms_id, 'sent', f'FAST2SMS_{sms_id}')
@@ -771,7 +781,7 @@ class SMSGateway:
                     'to': to_number
                 }
             else:
-                error_msg = result.get('message', 'Fast2SMS error')
+                error_msg = result.get('message', 'Fast2SMS error (invalid route or sender ID)')
                 self._update_sms_status(sms_id, 'failed', None, error_msg)
                 return {'success': False, 'error': error_msg}
                 
@@ -780,7 +790,7 @@ class SMSGateway:
             self._update_sms_status(sms_id, 'failed', None, error_msg)
             return {'success': False, 'error': error_msg}
         except Exception as e:
-            error_msg = f"SMS sending failed: {str(e)}"
+            error_msg = f"SMS sending calculation failed: {str(e)}"
             self._update_sms_status(sms_id, 'failed', None, error_msg)
             return {'success': False, 'error': error_msg}
     
@@ -2022,6 +2032,39 @@ def make_real_call():
         
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
+
+
+@app.route('/api/ai-assistant', methods=['POST'])
+def ai_assistant_route():
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    data = request.get_json()
+    command = data.get('command', '')
+    
+    if not command:
+        return jsonify({'response': "I'm sorry, I didn't receive a command."})
+    
+    if ai_assistant:
+        result = ai_assistant.process_command(command)
+        return jsonify({
+            'response': result.get('message'),
+            'action': result.get('action')
+        })
+    else:
+        return jsonify({'response': "AI Assistant is currently offline. Please try again later."})
+
+@app.route('/api/siren', methods=['POST'])
+def log_siren():
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    # Log the siren activation to console/security logs
+    user_id = session.get('user_id')
+    print(f"SECURITY ALERT: User {user_id} activated the emergency siren.")
+    
+    # In a real app, we'd insert this into a 'security_logs' table
+    return jsonify({'success': True, 'message': 'Siren activation logged.'})
 
 
 @app.after_request

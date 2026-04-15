@@ -449,7 +449,7 @@
                                     </div>
                                 </button>
                                 
-                                <button class="emergency-btn share-btn" onclick="emergencyShareLocation()">
+                                <button class="emergency-btn share-btn" onclick="emergencyShareLocation(this)">
                                     <div class="btn-content">
                                         <i class="fas fa-location-arrow"></i>
                                         <div class="btn-text">
@@ -462,7 +462,7 @@
                                     </div>
                                 </button>
                                 
-                                <button class="emergency-btn alert-btn" onclick="sendEmergencyAlert()">
+                                <button class="emergency-btn alert-btn" onclick="sendEmergencyAlert(this)">
                                     <div class="btn-content">
                                         <i class="fas fa-exclamation"></i>
                                         <div class="btn-text">
@@ -568,7 +568,7 @@
                                     <h5>Location Share Emergency</h5>
                                 </div>
                                 <p>Send emergency alert with your current location to all contacts</p>
-                                <button class="btn btn-danger" onclick="sendLocationEmergencySMS()">
+                                <button class="btn btn-danger" onclick="sendLocationEmergencySMS(this)" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4);">
                                     <i class="fas fa-paper-plane"></i> Send Location Emergency
                                 </button>
                             </div>
@@ -579,7 +579,7 @@
                                     <h5>Call for Help</h5>
                                 </div>
                                 <p>Send urgent help request message to emergency contacts</p>
-                                <button class="btn btn-danger" onclick="sendHelpEmergencySMS()">
+                                <button class="btn btn-danger" onclick="sendHelpEmergencySMS(this)" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4);">
                                     <i class="fas fa-paper-plane"></i> Send Help Request
                                 </button>
                             </div>
