@@ -17,7 +17,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = secrets.token_hex(32)
+# Use stable SECRET_KEY from .env so sessions survive restarts
+app.secret_key = os.getenv('SECRET_KEY', secrets.token_hex(32))
 CORS(app)
 
 # Database setup
@@ -980,7 +981,7 @@ class SMSGateway:
             'note': 'This is a demo mode message. Configure Twilio credentials for real SMS sending.'
         }
 
-# Initialize SMS Gateway
+# Initialize SMS Gateway (single global instance)
 sms_gateway = SMSGateway()
 
 # Routes
@@ -1597,38 +1598,7 @@ def get_smart_notifications():
         conn.close()
 
 # SMS Gateway API Routes
-@app.route('/api/sms/send', methods=['POST'])
-def send_sms():
-    """Send SMS to specified recipients"""
-    if 'user_id' not in session:
-        return jsonify({'error': 'Unauthorized'}), 401
-    
-    data = request.get_json()
-    recipients = data.get('recipients', [])
-    message = data.get('message', '')
-    
-    if not recipients or not message:
-        return jsonify({'success': False, 'error': 'Recipients and message are required'})
-    
-    # Initialize SMS gateway
-    sms_gateway = SMSGateway()
-    
-    results = []
-    for recipient in recipients:
-        result = sms_gateway.send_emergency_sms(recipient, message, session['user_id'])
-        results.append({
-            'recipient': recipient,
-            'success': result['success'],
-            'message': result.get('message', '')
-        })
-    
-    successful_sends = sum(1 for r in results if r['success'])
-    
-    return jsonify({
-        'success': successful_sends > 0,
-        'message': f'SMS sent to {successful_sends} of {len(recipients)} recipients',
-        'results': results
-    })
+# NOTE: /api/sms/send is defined below in the REAL SMS & VOICE APIs section
 
 @app.route('/api/sms/emergency-help', methods=['POST'])
 def send_emergency_help():
@@ -1898,12 +1868,7 @@ def update_emergency_contacts():
     finally:
         conn.close()
 
-# Initialize global SMS Gateway
-try:
-    sms_gateway = SMSGateway()
-except Exception as e:
-    print(f"SMSGateway global initialization failed: {e}")
-    sms_gateway = None
+# SMS Gateway already initialized above — no duplicate init needed
 
 # ---- CONTACTS API ----
 @app.route('/api/contacts', methods=['GET'])
@@ -2034,37 +1999,7 @@ def make_real_call():
         return jsonify({'success': False, 'error': str(e)})
 
 
-@app.route('/api/ai-assistant', methods=['POST'])
-def ai_assistant_route():
-    if 'user_id' not in session:
-        return jsonify({'error': 'Unauthorized'}), 401
-    
-    data = request.get_json()
-    command = data.get('command', '')
-    
-    if not command:
-        return jsonify({'response': "I'm sorry, I didn't receive a command."})
-    
-    if ai_assistant:
-        result = ai_assistant.process_command(command)
-        return jsonify({
-            'response': result.get('message'),
-            'action': result.get('action')
-        })
-    else:
-        return jsonify({'response': "AI Assistant is currently offline. Please try again later."})
-
-@app.route('/api/siren', methods=['POST'])
-def log_siren():
-    if 'user_id' not in session:
-        return jsonify({'error': 'Unauthorized'}), 401
-    
-    # Log the siren activation to console/security logs
-    user_id = session.get('user_id')
-    print(f"SECURITY ALERT: User {user_id} activated the emergency siren.")
-    
-    # In a real app, we'd insert this into a 'security_logs' table
-    return jsonify({'success': True, 'message': 'Siren activation logged.'})
+# NOTE: /api/ai-assistant and /api/siren are already defined above (lines ~1274 and ~1309)
 
 
 @app.after_request

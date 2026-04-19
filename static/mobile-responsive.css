@@ -1,0 +1,843 @@
+/* ============================================================
+   SAFEGUARD — MOBILE RESPONSIVE FIXES
+   Fixes all mobile layout issues seen in screenshots
+   ============================================================ */
+
+/* ── TABLET (max 1024px) ─────────────────────────────────── */
+@media (max-width: 1024px) {
+  .dashboard-header {
+    padding: 0 20px !important;
+    gap: 12px;
+  }
+
+  .logo-subtitle { display: none !important; }
+
+  .header-center .status-indicators {
+    display: none !important;
+  }
+
+  .dashboard-main {
+    padding: 24px !important;
+  }
+
+  .overview-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* ── MOBILE (max 768px) ──────────────────────────────────── */
+@media (max-width: 768px) {
+
+  /* === HEADER === */
+  .dashboard-header {
+    padding: 0 14px !important;
+    height: 58px !important;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+
+  .logo-text h2 {
+    font-size: 1rem !important;
+  }
+
+  .logo-subtitle { display: none !important; }
+
+  .header-center { display: none !important; }
+
+  /* User details — hide name/status on mobile */
+  .user-details { display: none !important; }
+
+  /* Language button — show only icon */
+  .header-language-btn span#currentLangText { display: none !important; }
+  .header-language-btn .fa-chevron-down { display: none !important; }
+  .header-language-btn {
+    padding: 6px 10px !important;
+    min-width: 36px !important;
+  }
+
+  /* Header right actions */
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 6px !important;
+  }
+
+  /* === NAV BAR (horizontal scrollable) === */
+  .dashboard-nav {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    z-index: 999 !important;
+    border-top: 1px solid rgba(255,255,255,.08) !important;
+    border-bottom: none !important;
+    box-shadow: 0 -4px 20px rgba(0,0,0,.4) !important;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .nav-container {
+    display: flex !important;
+    justify-content: space-around !important;
+    padding: 0 4px !important;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav-btn {
+    flex-direction: column !important;
+    height: 56px !important;
+    padding: 6px 8px !important;
+    gap: 3px !important;
+    font-size: 0.6rem !important;
+    min-width: 50px;
+    flex: 1;
+    justify-content: center !important;
+    align-items: center !important;
+    white-space: nowrap;
+  }
+
+  .nav-btn i {
+    font-size: 1.1rem !important;
+  }
+
+  .nav-btn span {
+    font-size: 0.58rem !important;
+    display: block !important;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  /* === MAIN CONTENT === */
+  .dashboard-main {
+    padding: 16px 14px 80px 14px !important; /* bottom padding for fixed nav */
+  }
+
+  /* === OVERVIEW HEADER === */
+  .overview-header, .section-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .overview-header h3, .section-header h3 {
+    font-size: 1.2rem !important;
+  }
+
+  .section-actions {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    width: 100%;
+  }
+
+  .section-actions .btn {
+    flex: 1;
+    justify-content: center;
+    min-width: 120px;
+    font-size: 0.8rem !important;
+    padding: 8px 12px !important;
+  }
+
+  /* === STAT CARDS === */
+  .overview-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .stat-card {
+    padding: 16px 12px !important;
+    gap: 10px !important;
+    border-radius: 14px !important;
+  }
+
+  .stat-icon {
+    width: 42px !important;
+    height: 42px !important;
+    font-size: 1.1rem !important;
+  }
+
+  .stat-content h4 { font-size: 0.65rem !important; }
+  .stat-content p  { font-size: 0.95rem !important; }
+
+  /* === ACTIVITY SECTION === */
+  .activity-section {
+    padding: 16px !important;
+    border-radius: 14px !important;
+  }
+
+  /* === RECOMMENDATIONS === */
+  .recommendations-section {
+    border-radius: 14px !important;
+  }
+
+  .rec-section-header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .rec-filter-tabs {
+    overflow-x: auto;
+    scrollbar-width: none;
+    display: flex !important;
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .rec-filter-tabs::-webkit-scrollbar { display: none; }
+
+  .rec-tab {
+    font-size: 0.75rem !important;
+    padding: 6px 12px !important;
+    white-space: nowrap;
+  }
+
+  .recommendations-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* === EMERGENCY SECTION === */
+  .emergency-dashboard {
+    flex-direction: column !important;
+  }
+
+  .emergency-primary {
+    width: 100% !important;
+  }
+
+  .emergency-title h4 {
+    font-size: 1rem !important;
+  }
+
+  .emergency-title p {
+    font-size: 0.8rem !important;
+  }
+
+  /* Emergency buttons — full width stack */
+  .emergency-buttons {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .emergency-btn {
+    width: 100% !important;
+    padding: 14px 16px !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  .btn-content {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+  }
+
+  .btn-title {
+    font-size: 0.9rem !important;
+    white-space: normal !important;
+  }
+
+  .btn-subtitle {
+    font-size: 0.75rem !important;
+    white-space: normal !important;
+  }
+
+  /* === EMERGENCY CONTACTS === */
+  .emergency-contacts {
+    width: 100% !important;
+    margin-top: 20px !important;
+  }
+
+  .contacts-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .contact-card {
+    padding: 12px 14px !important;
+    border-radius: 12px !important;
+    flex-wrap: nowrap !important;
+    gap: 10px !important;
+  }
+
+  .contact-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .contact-info h5 {
+    font-size: 0.85rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .contact-info p {
+    font-size: 0.7rem !important;
+    white-space: normal !important;
+  }
+
+  .contact-number {
+    font-size: 0.8rem !important;
+    white-space: nowrap;
+  }
+
+  .contact-call-btn {
+    width: 40px !important;
+    height: 40px !important;
+    flex-shrink: 0 !important;
+    border-radius: 50% !important;
+  }
+
+  /* Add contact form — stack on mobile */
+  .add-contact-section form {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .add-contact-section input,
+  .add-contact-section select {
+    width: 100% !important;
+    min-width: unset !important;
+  }
+
+  /* Personal contact card (white card) */
+  .current-contacts .contact-card {
+    background: rgba(255,255,255,0.05) !important;
+    border-radius: 12px !important;
+  }
+
+  /* Text/Send button fix — prevent clipping */
+  .current-contacts .contact-call-btn {
+    width: auto !important;
+    padding: 8px 14px !important;
+    border-radius: 8px !important;
+    font-size: 0.8rem !important;
+    white-space: nowrap;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+
+  /* === QUICK EMERGENCY SMS === */
+  .emergency-sms-options {
+    grid-template-columns: 1fr !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .sms-option-card {
+    padding: 14px !important;
+  }
+
+  .sms-option-card h5 { font-size: 0.9rem !important; }
+  .sms-option-card p  { font-size: 0.78rem !important; }
+
+  /* SMS send buttons full width */
+  .sms-option-card .btn {
+    width: 100% !important;
+    justify-content: center !important;
+    font-size: 0.82rem !important;
+  }
+
+  /* === AI ASSISTANT === */
+  .ai-dashboard {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+
+  .ai-controls {
+    width: 100% !important;
+  }
+
+  .control-panel {
+    padding: 16px !important;
+    border-radius: 14px !important;
+  }
+
+  /* Voice buttons full width */
+  .voice-controls {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .voice-controls .btn {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 12px !important;
+  }
+
+  /* Quick commands grid */
+  .suggestion-buttons {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+
+  .suggestion-btn {
+    width: 100% !important;
+    padding: 10px 8px !important;
+    font-size: 0.78rem !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 6px !important;
+    border-radius: 10px !important;
+  }
+
+  /* AI Chat container */
+  .ai-chat-container {
+    width: 100% !important;
+  }
+
+  .ai-chat {
+    border-radius: 16px !important;
+    overflow: hidden;
+  }
+
+  /* AI Chat Input — prevent text cutoff */
+  .ai-input {
+    display: flex !important;
+    gap: 8px !important;
+    align-items: center !important;
+  }
+
+  .ai-input input#aiTextInput {
+    flex: 1 !important;
+    min-width: 0 !important;
+    font-size: 0.85rem !important;
+    padding: 12px 14px !important;
+    border-radius: 10px !important;
+  }
+
+  .ai-input .send-btn {
+    width: 44px !important;
+    height: 44px !important;
+    flex-shrink: 0 !important;
+    border-radius: 10px !important;
+  }
+
+  .ai-input-container {
+    padding: 12px !important;
+  }
+
+  .input-suggestions {
+    font-size: 0.72rem !important;
+    padding: 6px 0 0 !important;
+    white-space: normal !important;
+    line-height: 1.4;
+  }
+
+  /* AI messages */
+  .ai-messages {
+    max-height: 300px !important;
+    padding: 12px !important;
+  }
+
+  .message {
+    gap: 8px !important;
+  }
+
+  .message-content p {
+    font-size: 0.85rem !important;
+  }
+
+  /* Chat header */
+  .chat-header {
+    padding: 12px 14px !important;
+  }
+
+  .chat-info h4 { font-size: 0.9rem !important; }
+  .chat-info p  { font-size: 0.75rem !important; }
+
+  /* === LOCATION SECTION === */
+  .location-dashboard {
+    flex-direction: column !important;
+    gap: 14px !important;
+  }
+
+  .location-controls {
+    display: flex !important;
+    gap: 10px !important;
+    flex-wrap: wrap !important;
+  }
+
+  .location-controls .control-group {
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .location-main {
+    flex-direction: column !important;
+    gap: 14px !important;
+  }
+
+  #map, .location-map {
+    height: 250px !important;
+    border-radius: 14px !important;
+  }
+
+  .location-sidebar {
+    width: 100% !important;
+  }
+
+  /* === SHELTERS SECTION === */
+  .shelters-main {
+    flex-direction: column !important;
+    gap: 14px !important;
+  }
+
+  .shelters-list {
+    width: 100% !important;
+  }
+
+  #shelterMap, .shelters-map {
+    height: 250px !important;
+    border-radius: 14px !important;
+    width: 100% !important;
+  }
+
+  .shelters-controls {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .search-box, .filter-options {
+    width: 100% !important;
+  }
+
+  /* === COMPLAINTS SECTION === */
+  .complaints-dashboard {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+
+  .form-row {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .complaint-form-section,
+  .complaint-guidelines {
+    width: 100% !important;
+  }
+
+  /* === TIPS SECTION === */
+  .tips-dashboard {
+    gap: 16px !important;
+  }
+
+  .featured-tip {
+    padding: 18px !important;
+    border-radius: 14px !important;
+  }
+
+  .featured-tip-icon { font-size: 1.8rem !important; }
+  .featured-tip-description { font-size: 0.9rem !important; }
+
+  .tips-grid, .tips-grid-enhanced {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .category-filter {
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-wrap: nowrap !important;
+    padding-bottom: 4px;
+  }
+  .category-filter::-webkit-scrollbar { display: none; }
+
+  .category-btn {
+    white-space: nowrap;
+    font-size: 0.78rem !important;
+    padding: 6px 12px !important;
+  }
+
+  /* === SMS GATEWAY SECTION === */
+  .sms-gateway-dashboard {
+    gap: 14px !important;
+  }
+
+  .sms-contacts-section {
+    padding: 16px !important;
+    border-radius: 14px !important;
+  }
+
+  .contacts-management .form-row {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  /* === NOTIFICATIONS PANEL === */
+  .notifications-panel {
+    width: 100% !important;
+    right: 0 !important;
+    left: 0 !important;
+    border-radius: 20px 20px 0 0 !important;
+    bottom: 0 !important;
+    top: auto !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+  }
+
+  .notifications-header {
+    padding: 14px 16px !important;
+  }
+
+  .notifications-tabs {
+    padding: 0 12px !important;
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-wrap: nowrap !important;
+    gap: 4px !important;
+  }
+  .notifications-tabs::-webkit-scrollbar { display: none; }
+
+  .tab-notification {
+    white-space: nowrap;
+    font-size: 0.78rem !important;
+    padding: 8px 10px !important;
+  }
+
+  .notification-quick-filters {
+    padding: 10px 12px !important;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* === FLOATING EMERGENCY BUTTON === */
+  .floating-emergency {
+    bottom: 72px !important; /* above nav bar */
+    right: 16px !important;
+    z-index: 998 !important;
+  }
+
+  .floating-btn {
+    width: 52px !important;
+    height: 52px !important;
+  }
+
+  .floating-label {
+    font-size: 0.65rem !important;
+    margin-top: 4px !important;
+  }
+
+  /* === EMERGENCY ALERT BANNER === */
+  .emergency-alert-banner {
+    font-size: 0.78rem !important;
+    padding: 6px 12px !important;
+    border-radius: 8px !important;
+    flex-wrap: wrap;
+    gap: 6px;
+    text-align: center;
+  }
+
+  /* === HAMBURGER MENU FIX === */
+  .hamburger-menu {
+    display: flex !important;
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  /* === MODAL FIXES === */
+  .history-modal-content,
+  .notification-modal-content {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    border-radius: 16px !important;
+    margin: 10px auto !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+  }
+
+  /* === FORM INPUTS FULL WIDTH === */
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100% !important;
+    font-size: 16px !important; /* Prevent iOS zoom on focus */
+  }
+
+  /* === EMERGENCY MAIN LAYOUT === */
+  .emergency-main {
+    flex-direction: column !important;
+    gap: 20px !important;
+  }
+
+  /* === OVERVIEW ACTIONS === */
+  .overview-actions {
+    width: 100%;
+  }
+
+  .overview-actions .btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* === SECTION HEADER ACTIONS === */
+  .section-actions {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .section-actions .btn {
+    flex: 1;
+    min-width: 100px;
+    justify-content: center;
+  }
+
+  /* === STATUS DETAILS === */
+  .status-details {
+    gap: 8px !important;
+  }
+
+  .status-row {
+    flex-wrap: wrap;
+    gap: 4px;
+    font-size: 0.8rem;
+  }
+
+  /* === TIPS SECTION HEADER === */
+  .tips-dashboard > .section-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+/* ── SMALL MOBILE (max 480px) ────────────────────────────── */
+@media (max-width: 480px) {
+
+  /* Logo — very small screens */
+  .logo-icon { font-size: 1.3rem !important; }
+  .logo-text h2 { font-size: 0.9rem !important; }
+
+  /* Stat cards — single column on very small screens */
+  .overview-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .stat-card {
+    padding: 14px !important;
+  }
+
+  /* Nav bar labels even smaller */
+  .nav-btn span {
+    font-size: 0.52rem !important;
+  }
+
+  /* Dashboard main padding */
+  .dashboard-main {
+    padding: 12px 10px 76px 10px !important;
+  }
+
+  /* Section headers */
+  .overview-header h3, .section-header h3 {
+    font-size: 1.05rem !important;
+  }
+
+  /* Emergency buttons */
+  .emergency-btn {
+    padding: 12px 14px !important;
+  }
+
+  .btn-title { font-size: 0.85rem !important; }
+  .btn-subtitle { font-size: 0.7rem !important; }
+
+  /* Contact cards */
+  .contact-card { padding: 10px 12px !important; }
+
+  /* AI chat */
+  .ai-messages { max-height: 240px !important; }
+
+  /* Suggestion buttons */
+  .suggestion-buttons {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  /* Featured tip */
+  .featured-tip { padding: 14px !important; }
+
+  /* Form inputs */
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    padding: 10px 12px !important;
+  }
+
+  /* Add contact section */
+  .add-contact-section {
+    padding: 12px !important;
+  }
+
+  /* Quick filters */
+  .rec-filter-tabs { gap: 4px !important; }
+  .rec-tab { padding: 5px 10px !important; font-size: 0.72rem !important; }
+
+  /* Notification panel */
+  .notification-quick-filters {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  /* Header buttons */
+  .header-btn {
+    width: 34px !important;
+    height: 34px !important;
+    font-size: 0.85rem !important;
+  }
+}
+
+/* ── LANDSCAPE MOBILE ────────────────────────────────────── */
+@media (max-width: 768px) and (orientation: landscape) {
+  .dashboard-main {
+    padding-bottom: 66px !important;
+  }
+
+  .nav-btn {
+    height: 48px !important;
+    flex-direction: row !important;
+    gap: 5px !important;
+    font-size: 0.7rem !important;
+    padding: 0 10px !important;
+  }
+
+  .nav-btn i { font-size: 0.9rem !important; }
+
+  #map, .location-map,
+  #shelterMap, .shelters-map {
+    height: 200px !important;
+  }
+
+  .ai-messages {
+    max-height: 200px !important;
+  }
+}
+
+/* ── TOUCH IMPROVEMENTS ──────────────────────────────────── */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  .stat-card:hover { transform: none !important; }
+  .activity-item:hover { transform: none !important; }
+  .contact-card:hover { transform: none !important; }
+  .emergency-btn:hover { transform: none !important; }
+
+  /* Bigger touch targets */
+  .nav-btn { min-height: 44px !important; }
+  .header-btn { min-width: 44px !important; min-height: 44px !important; }
+  .contact-call-btn { min-width: 44px !important; min-height: 44px !important; }
+
+  /* Tap highlight */
+  * { -webkit-tap-highlight-color: rgba(99,102,241,0.15); }
+}
