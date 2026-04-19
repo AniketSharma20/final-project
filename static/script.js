@@ -490,11 +490,12 @@ function setupEventListeners() {
     // Close notifications panel when clicking outside
     document.addEventListener('click', function(event) {
         const notificationsPanel = document.getElementById('notificationsPanel');
-        const notificationBtn = document.querySelector('[onclick="toggleNotifications()"]');
         
-        if (notificationsPanel && !notificationsPanel.contains(event.target) && 
-            !notificationBtn.contains(event.target)) {
-            notificationsPanel.classList.remove('active');
+        if (notificationsPanel && !notificationsPanel.contains(event.target)) {
+            const isToggleBtn = event.target.closest('[onclick="toggleNotifications()"]');
+            if (!isToggleBtn) {
+                notificationsPanel.classList.remove('active');
+            }
         }
     });
 

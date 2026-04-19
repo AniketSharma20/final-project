@@ -584,10 +584,15 @@
     right: 0 !important;
     left: 0 !important;
     border-radius: 20px 20px 0 0 !important;
-    bottom: 0 !important;
+    bottom: -100% !important;
     top: auto !important;
     max-height: 85vh !important;
     overflow-y: auto !important;
+    transition: bottom 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .notifications-panel.active {
+    bottom: 0 !important;
   }
 
   .notifications-header {
