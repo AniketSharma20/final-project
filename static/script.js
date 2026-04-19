@@ -3966,15 +3966,15 @@ async function fireRealSMS(payload, btnContext) {
         const data = await res.json();
         
         if(data.success) {
-            alert(`Live SMS dispatched successfully! Status: ${data.dispatched || 'Sent'} message(s).`);
+            showNotification(`Live SMS dispatched successfully! Status: ${data.dispatched || 'Sent'} message(s).`, 'success');
         } else if(data.error && data.error.includes("No emergency contacts found")) {
-            alert("Simulated Success! " + data.error + " (In reality, the SMS would fire to your saved contacts).");
+            showNotification("Simulated Success! " + data.error + " (In reality, the SMS would fire to your saved contacts).", 'warning');
         } else {
-            alert(`Simulated Action. (Real backend said: ${data.error}). Add Twilio configs to .env to make it work!`);
+            showNotification(`Simulated Action. (Real backend said: ${data.error}). Add Twilio configs to .env to make it work!`, 'error');
         }
     } catch(err) {
         console.error(err);
-        alert('Network error sending SMS, but action simulated successfully in offline mode.');
+        showNotification('Network error sending SMS, but action simulated successfully in offline mode.', 'warning');
     } finally {
         if(btnContext && btnContext.innerHTML) {
             btnContext.innerHTML = originalText;
@@ -4109,11 +4109,11 @@ async function activateSiren() {
             // Log to backend
             const res = await fetch('/api/siren', { method: 'POST' });
             if(res.ok) {
-                alert("Siren protocol engaged successfully.");
+                showNotification("Siren protocol engaged successfully.", 'success');
             }
         } catch(err) {
             console.log("Audio fallback needed", err);
-            alert("Loud Siren Alert Triggered!");
+            showNotification("Loud Siren Alert Triggered!", 'warning');
         }
     }
 }
@@ -4141,13 +4141,13 @@ async function triggerRealCall(phone, callType, btnContext) {
         });
         const data = await res.json();
         if(data.success) {
-            alert(`Call initiated via Twilio! Call Status: ${data.status}`);
+            showNotification(`Call initiated via Twilio! Call Status: ${data.status}`, 'success');
         } else {
-            alert(`Offline simulation! (Backend said: ${data.error}). Update Twilio ENV to ring physical phones.`);
+            showNotification(`Offline simulation! (Backend said: ${data.error}). Update Twilio ENV to ring physical phones.`, 'warning');
         }
     } catch(err) {
         console.error(err);
-        alert('Action simulated. Check network connection for live calls.');
+        showNotification('Action simulated. Check network connection for live calls.', 'warning');
     }
 }
 
@@ -4188,15 +4188,15 @@ async function submitComplaint(e) {
         const data = await res.json();
         
         if (data.success) {
-            alert("Complaint submitted successfully and stored securely in the database.");
+            showNotification("Complaint submitted successfully and stored securely in the database.", 'success');
             document.getElementById('complaintForm')?.reset();
             if(typeof showComplaintHistory === 'function') showComplaintHistory();
         } else {
-            alert("Error submitting complaint: " + data.message);
+            showNotification("Error submitting complaint: " + data.message, 'error');
         }
     } catch(err) {
         console.error(err);
-        alert("Failed to connect to the complaint database.");
+        showNotification("Failed to connect to the complaint database.", 'error');
     } finally {
         btn.innerHTML = originalText;
         btn.disabled = false;

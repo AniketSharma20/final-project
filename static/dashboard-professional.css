@@ -780,6 +780,13 @@ body {
 .featured-tip h4 { color: rgba(255,255,255,.7) !important; font-size: .8rem !important; text-transform: uppercase; letter-spacing: .08em; }
 .featured-tip-description { color: #fff !important; font-size: 1.1rem !important; line-height: 1.6 !important; margin: 8px 0 20px !important; }
 
+.tips-categories {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
 .category-filter { display: flex !important; flex-wrap: wrap !important; gap: 8px !important; margin-bottom: 24px !important; }
 .category-btn {
   padding: 8px 16px !important;

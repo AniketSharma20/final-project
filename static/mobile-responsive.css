@@ -352,6 +352,7 @@
 
   /* === AI ASSISTANT === */
   .ai-dashboard {
+    display: flex !important;
     flex-direction: column !important;
     gap: 16px !important;
   }
@@ -404,7 +405,11 @@
 
   .ai-chat {
     border-radius: 16px !important;
-    overflow: hidden;
+    overflow: hidden !important;
+    height: 400px !important;
+    max-height: 65vh !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
 
   /* AI Chat Input — prevent text cutoff */
