@@ -680,9 +680,15 @@ function showSection(sectionId, pushState = true) {
 
 // Handle browser back button
 window.addEventListener('popstate', function(event) {
+    // Close notifications panel on back navigation
+    const notificationsPanel = document.getElementById('notificationsPanel');
+    if (notificationsPanel && notificationsPanel.classList.contains('active') && window.location.hash !== '#notifications') {
+        notificationsPanel.classList.remove('active');
+    }
+
     if (event.state && event.state.section) {
         showSection(event.state.section, false);
-    } else {
+    } else if (window.location.hash !== '#notifications') {
         const hash = window.location.hash.substring(1) || 'overview';
         showSection(hash, false);
     }
@@ -2696,8 +2702,14 @@ function toggleNotifications() {
             // Re-load notifications when opening
             loadNotifications();
             trackUserBehavior('notification_panel_open', 'Opened notifications panel');
+            if (isMobile()) {
+                history.pushState({ modal: 'notifications' }, '', '#notifications');
+            }
         } else {
             trackUserBehavior('notification_panel_close', 'Closed notifications panel');
+            if (isMobile() && window.location.hash === '#notifications') {
+                history.back(); // Clean up URL when closed manually
+            }
         }
     }
 }

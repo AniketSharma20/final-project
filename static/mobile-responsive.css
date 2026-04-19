@@ -584,15 +584,18 @@
     right: 0 !important;
     left: 0 !important;
     border-radius: 20px 20px 0 0 !important;
-    bottom: -100% !important;
+    bottom: 0 !important;
     top: auto !important;
     max-height: 85vh !important;
     overflow-y: auto !important;
-    transition: bottom 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transform: translateY(200%) !important;
+    visibility: hidden !important;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s ease !important;
   }
 
   .notifications-panel.active {
-    bottom: 0 !important;
+    transform: translateY(0) !important;
+    visibility: visible !important;
   }
 
   .notifications-header {
