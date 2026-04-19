@@ -30,10 +30,10 @@
 
   /* === HEADER === */
   .dashboard-header {
-    padding: 0 14px !important;
-    height: 58px !important;
-    gap: 8px;
-    flex-wrap: nowrap;
+    padding: 0 10px !important;
+    height: 60px !important;
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
   }
 
   .logo-text h2 {
@@ -44,8 +44,8 @@
 
   .header-center { display: none !important; }
 
-  /* User details — hide name/status on mobile */
-  .user-details { display: none !important; }
+  /* Hide entire user info on mobile to save space */
+  .user-info { display: none !important; }
 
   /* Language button — show only icon */
   .header-language-btn span#currentLangText { display: none !important; }
@@ -57,9 +57,10 @@
 
   /* Header right actions */
   .header-right {
-    display: flex;
-    align-items: center;
+    display: flex !important;
+    align-items: center !important;
     gap: 6px !important;
+    flex-wrap: nowrap !important;
   }
 
   /* === NAV BAR (horizontal scrollable) === */
@@ -78,10 +79,12 @@
 
   .nav-container {
     display: flex !important;
-    justify-content: space-around !important;
-    padding: 0 4px !important;
-    overflow-x: auto;
+    justify-content: flex-start !important;
+    padding: 0 10px !important;
+    gap: 12px !important;
+    overflow-x: auto !important;
     scrollbar-width: none;
+    -webkit-overflow-scrolling: touch !important;
   }
 
   .nav-btn {
@@ -90,8 +93,8 @@
     padding: 6px 8px !important;
     gap: 3px !important;
     font-size: 0.6rem !important;
-    min-width: 50px;
-    flex: 1;
+    flex: 0 0 auto !important;
+    min-width: 65px !important;
     justify-content: center !important;
     align-items: center !important;
     white-space: nowrap;
@@ -625,7 +628,7 @@
 
   /* === FLOATING EMERGENCY BUTTON === */
   .floating-emergency {
-    bottom: 72px !important; /* above nav bar */
+    bottom: 95px !important; /* well above nav bar */
     right: 16px !important;
     z-index: 998 !important;
   }
