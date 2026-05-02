@@ -1531,7 +1531,7 @@ function initializeMaps() {
         }).addTo(currentMap);
         
         // Add locate control for mobile
-        if (isMobile() && navigator.geolocation) {
+        if (isMobile() && navigator.geolocation && typeof L.control.locate === 'function') {
             L.control.locate({
                 position: 'topright',
                 drawCircle: true,
@@ -1569,7 +1569,7 @@ function initializeMaps() {
         }).addTo(sheltersMap);
         
         // Add locate control for mobile
-        if (isMobile() && navigator.geolocation) {
+        if (isMobile() && navigator.geolocation && typeof L.control.locate === 'function') {
             L.control.locate({
                 position: 'topright',
                 drawCircle: true,
