@@ -999,7 +999,7 @@ def landing():
 def login_page():
     if 'user_id' in session:
         return redirect(url_for('dashboard'))
-    return render_template('index.html')
+    return render_template('signin.html')
 
 @app.route('/signin')
 def signin():

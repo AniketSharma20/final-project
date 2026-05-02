@@ -538,7 +538,7 @@
                                 </div>
                             </div>
                             
-                            <div class="current-contacts" id="currentContacts" style="margin-top: 15px; display: grid; gap: 10px;">
+                            <div class="current-contacts" id="currentContactsEmergency" style="margin-top: 15px; display: grid; gap: 10px;">
                                 <!-- Current contacts will be dynamically loaded here by loadContacts() -->
                             </div>
                             
@@ -601,18 +601,18 @@
                     <!-- Custom SMS Form -->
                     <div class="custom-sms-section">
                         <h4><i class="fas fa-edit"></i> Custom SMS Message</h4>
-                        <form id="customSMSForm" onsubmit="sendCustomSMS(event)">
+                        <form id="customSMSFormEmergency" onsubmit="sendCustomSMSEmergency(event)">
                             <div class="form-group">
-                                <label for="customSMSRecipient">Recipient Phone Number *</label>
-                                <input type="tel" id="customSMSRecipient" placeholder="+91XXXXXXXXXX" required>
+                                <label for="customSMSRecipientEmergency">Recipient Phone Number *</label>
+                                <input type="tel" id="customSMSRecipientEmergency" placeholder="+91XXXXXXXXXX" required>
                                 <small>Enter multiple numbers separated by commas for bulk SMS</small>
                             </div>
                             
                             <div class="form-group">
-                                <label for="customSMSMessage">Message *</label>
-                                <textarea id="customSMSMessage" rows="4" placeholder="Type your emergency message here..." required></textarea>
+                                <label for="customSMSMessageEmergency">Message *</label>
+                                <textarea id="customSMSMessageEmergency" rows="4" placeholder="Type your emergency message here..." required></textarea>
                                 <div class="message-counter">
-                                    <span id="charCount">0</span> / 160 characters
+                                    <span id="charCountEmergency">0</span> / 160 characters
                                 </div>
                             </div>
                             
@@ -620,7 +620,7 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-paper-plane"></i> Send SMS
                                 </button>
-                                <button type="button" class="btn btn-secondary" onclick="clearCustomSMS()">
+                                <button type="button" class="btn btn-secondary" onclick="clearCustomSMSEmergency()">
                                     <i class="fas fa-times"></i> Clear
                                 </button>
                             </div>
@@ -628,9 +628,9 @@
                     </div>
                     
                     <!-- SMS Status Display -->
-                    <div class="sms-status-section" id="smsStatusSection" style="display: none;">
+                    <div class="sms-status-section" id="smsStatusSectionEmergency" style="display: none;">
                         <h4><i class="fas fa-info-circle"></i> SMS Status</h4>
-                        <div class="status-messages" id="smsStatusMessages">
+                        <div class="status-messages" id="smsStatusMessagesEmergency">
                             <!-- SMS status messages will appear here -->
                         </div>
                     </div>
@@ -1877,6 +1877,60 @@
             // Add any additional initialization code here
             console.log('Dashboard initialized');
         }
+
+        // Helper functions for Emergency section's renamed SMS form
+        function sendCustomSMSEmergency(event) {
+            event.preventDefault();
+            const recipient = document.getElementById('customSMSRecipientEmergency').value.trim();
+            const message = document.getElementById('customSMSMessageEmergency').value.trim();
+            if (!recipient || !message) {
+                showSMSStatus('Please fill in all required fields', 'error');
+                return;
+            }
+            const recipients = recipient.split(',').map(r => r.trim()).filter(r => r);
+            fetch('/api/sms/send-custom', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ recipient: recipients[0], message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSMSStatus('SMS sent successfully!', 'success');
+                    document.getElementById('customSMSFormEmergency').reset();
+                    updateCharCounterEmergency();
+                } else {
+                    showSMSStatus(data.error || 'Failed to send SMS', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error sending SMS:', error);
+                showSMSStatus('Failed to send SMS', 'error');
+            });
+        }
+
+        function clearCustomSMSEmergency() {
+            document.getElementById('customSMSFormEmergency').reset();
+            updateCharCounterEmergency();
+        }
+
+        function updateCharCounterEmergency() {
+            const textarea = document.getElementById('customSMSMessageEmergency');
+            const counter = document.getElementById('charCountEmergency');
+            if (textarea && counter) {
+                const length = textarea.value.length;
+                counter.textContent = length;
+                counter.style.color = length > 160 ? '#e74c3c' : length > 140 ? '#f39c12' : '#27ae60';
+            }
+        }
+
+        // Setup char counter for emergency section on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const textarea = document.getElementById('customSMSMessageEmergency');
+            if (textarea) {
+                textarea.addEventListener('input', updateCharCounterEmergency);
+            }
+        });
     </script>
 </body>
 </html>

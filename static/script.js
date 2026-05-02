@@ -310,11 +310,11 @@ function renderSafetyTip() {
     // Create indicators HTML
     let indicatorsHTML = '';
     safetyTips.forEach((_, index) => {
-        indicatorsHTML += `<button class="tip-indicator ${index === currentTipIndex ? 'active' : ''}" onclick="goToTip(${index})"></button>`;
+        indicatorsHTML += `<button class="tip-indicator ${index === currentTipIndex ? 'active' : ''}" onclick="event.stopPropagation(); goToTip(${index})"></button>`;
     });
     
     bannerContainer.innerHTML = `
-        <div class="safety-tip-banner ${tip.type}" onclick="showSection('tips')">
+        <div class="safety-tip-banner ${tip.type}">
             <div class="safety-tip-inner">
                 <div class="safety-tip-icon-section">
                     <div class="safety-tip-icon">
@@ -340,6 +340,9 @@ function renderSafetyTip() {
                         <div class="tip-indicators">
                             ${indicatorsHTML}
                         </div>
+                        <button class="tip-view-all-btn" onclick="event.stopPropagation(); showSection('tips')" style="background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.4); color:inherit; padding:4px 12px; border-radius:20px; font-size:0.78rem; cursor:pointer; white-space:nowrap;">
+                            View All Tips →
+                        </button>
                     </div>
                 </div>
             </div>
