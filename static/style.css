@@ -284,7 +284,7 @@ body {
     .dashboard-nav:not(.mobile-nav-collapsed) {
         display: none;
     }
-}
+
 
 .header-center {
     display: flex;
@@ -458,7 +458,6 @@ body {
     margin-bottom: 28px;
     padding-bottom: 0;
     border-bottom: none;
-}
 }
 
 .section-header h3 {

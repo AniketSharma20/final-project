@@ -410,9 +410,11 @@ class UserBehaviorAnalyzer:
 # Enhanced AI Assistant
 class AIAssistant:
     def __init__(self):
+        self.sr = None  # will be set if speech_recognition is available
         try:
-            import speech_recognition as sr
-            import pyttsx3
+            import speech_recognition as sr  # type: ignore
+            import pyttsx3  # type: ignore
+            self.sr = sr
             self.recognizer = sr.Recognizer()
             self.tts_engine = pyttsx3.init()
             self.available = True
@@ -423,7 +425,7 @@ class AIAssistant:
         # Configure Google Generative AI integration for dynamic conversations
         self.gemini_model = None
         try:
-            import google.generativeai as genai
+            import google.generativeai as genai  # type: ignore
             gemini_key = os.getenv('GEMINI_API_KEY')
             if gemini_key:
                 genai.configure(api_key=gemini_key)
@@ -650,8 +652,7 @@ class AIAssistant:
             return "AI Assistant not available. Please use text input instead."
         
         try:
-            import speech_recognition as sr
-            with sr.Microphone() as source:
+            with self.sr.Microphone() as source:
                 print("Listening...")
                 audio = self.recognizer.listen(source, timeout=5)
                 text = self.recognizer.recognize_google(audio)
@@ -666,7 +667,6 @@ class AIAssistant:
             return
         
         try:
-            import pyttsx3
             self.tts_engine.say(text)
             self.tts_engine.runAndWait()
         except:
