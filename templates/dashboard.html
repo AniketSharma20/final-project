@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Women Security System - Dashboard</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard-professional.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='mobile-responsive.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=2.8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard-professional.css') }}?v=2.8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='mobile-responsive.css') }}?v=2.8">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -319,7 +319,7 @@
                 <div class="location-dashboard">
                     <div class="location-controls">
                         <div class="control-group">
-                            <label data-translate="trackingInterval">Tracking Interval</label>
+                            <label for="trackingInterval" data-translate="trackingInterval">Tracking Interval</label>
                             <select id="trackingInterval" onchange="updateTrackingInterval()">
                                 <option value="10000" data-translate="every10Seconds">Every 10 seconds</option>
                                 <option value="30000" selected data-translate="every30Seconds">Every 30 seconds</option>
@@ -328,7 +328,7 @@
                             </select>
                         </div>
                         <div class="control-group">
-                            <label data-translate="accuracyLevel">Accuracy Level</label>
+                            <label for="accuracyLevel" data-translate="accuracyLevel">Accuracy Level</label>
                             <select id="accuracyLevel" onchange="updateAccuracyLevel()">
                                 <option value="low" data-translate="lowFaster">Low (Faster)</option>
                                 <option value="balanced" selected data-translate="balanced">Balanced</option>
@@ -1096,7 +1096,7 @@
         <!-- Notification Quick Filters -->
         <div class="notification-quick-filters">
             <div class="filter-group">
-                <label><i class="fas fa-clock"></i> Time:</label>
+                <label for="notificationTimeFilter"><i class="fas fa-clock"></i> Time:</label>
                 <select id="notificationTimeFilter" onchange="applyTimeFilter(this.value)">
                     <option value="all">All Time</option>
                     <option value="today">Today</option>
@@ -1105,7 +1105,7 @@
                 </select>
             </div>
             <div class="filter-group">
-                <label><i class="fas fa-sort-amount-down"></i> Sort:</label>
+                <label for="notificationSort"><i class="fas fa-sort-amount-down"></i> Sort:</label>
                 <select id="notificationSort" onchange="sortNotifications(this.value)">
                     <option value="newest">Newest First</option>
                     <option value="oldest">Oldest First</option>
@@ -1237,11 +1237,11 @@
                     </div>
                     <div class="quiet-hours-time" id="quietHoursTime" style="display: none;">
                         <div class="time-input-group">
-                            <label>From:</label>
+                            <label for="quietStart">From:</label>
                             <input type="time" id="quietStart" value="22:00">
                         </div>
                         <div class="time-input-group">
-                            <label>To:</label>
+                            <label for="quietEnd">To:</label>
                             <input type="time" id="quietEnd" value="07:00">
                         </div>
                     </div>
@@ -1295,7 +1295,7 @@
                         <option value="archived">Archived</option>
                         <option value="deleted">Deleted</option>
                     </select>
-                    <select id="historyDateFilter" onchange="filterHistoryDate(this.value)">
+                    <select id="notificationHistoryDateFilter" onchange="filterHistoryDate(this.value)">
                         <option value="all">All Dates</option>
                         <option value="today">Today</option>
                         <option value="week">This Week</option>
@@ -1365,7 +1365,7 @@
     <!-- Scripts -->
     <script src="{{ url_for('static', filename='translations.js') }}"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="{{ url_for('static', filename='script.js') }}?v=1.1"></script>
+    <script src="{{ url_for('static', filename='script.js') }}?v=2.6"></script>
     <script>
         // Language selector functions
         function toggleLanguageDropdown() {

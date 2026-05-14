@@ -6159,6 +6159,8 @@ body {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255,255,255,0.05);
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .safety-tip-banner:hover {
@@ -6241,6 +6243,9 @@ body {
 /* Content Section */
 .safety-tip-content {
     flex: 1;
+    min-width: 0; /* Prevents flex child from blowing out container width */
+    width: 100%;
+    box-sizing: border-box;
     padding: 24px 28px;
     position: relative;
     z-index: 1;
@@ -6283,6 +6288,9 @@ body {
     color: #94a3b8;
     line-height: 1.6;
     margin-bottom: 16px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
 }
 
 /* Tip Navigation */
@@ -6421,6 +6429,7 @@ body {
     .safety-tip-inner {
         flex-direction: column;
         min-height: auto;
+        width: 100%;
     }
     
     .safety-tip-icon-section {
@@ -6430,6 +6439,8 @@ body {
     
     .safety-tip-content {
         padding: 20px;
+        width: 100%;
+        box-sizing: border-box;
     }
     
     .safety-tip-icon {

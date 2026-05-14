@@ -3647,13 +3647,12 @@ if (typeof L !== 'undefined') {
 
 // Emergency Contacts and SMS Functions
 function loadEmergencyContacts() {
-    // Load emergency contacts from the server
-    fetch('/api/emergency-contacts')
+    // Use the unified /api/contacts endpoint (same as loadContacts)
+    fetch('/api/contacts')
         .then(response => response.json())
-        .then(data => {
-            console.log('Emergency contacts data:', data);
-            if (data.success) {
-                displayEmergencyContacts(data.contacts);
+        .then(contacts => {
+            if (Array.isArray(contacts)) {
+                displayEmergencyContacts(contacts);
             }
         })
         .catch(error => {
@@ -3662,33 +3661,47 @@ function loadEmergencyContacts() {
 }
 
 function displayEmergencyContacts(contacts) {
-    console.log('Displaying emergency contacts:', contacts);
-    
-    const containers = document.querySelectorAll('.current-contacts, #currentContacts, #emergencyCurrentContacts, .contacts-list');
-    
-    const htmlContent = contacts.length === 0 ? 
-        '<p class="no-contacts">No emergency contacts set up</p>' :
-        contacts.map(contact => `
-            <div class="user-contact-card">
-                <div class="contact-info">
-                    <h5>${contact.name}</h5>
-                    <span class="contact-number">${contact.phone}</span>
+    const htmlContent = contacts.length === 0 
+        ? `<div style="text-align:center; padding:20px; color:#64748b;">
+               <i class="fas fa-user-plus" style="font-size:2rem; margin-bottom:10px; display:block; color:#4f46e5;"></i>
+               <p style="font-size:0.9rem;">No emergency contacts yet.<br>Add one below!</p>
+           </div>`
+        : contacts.map(c => `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:14px; margin-bottom:8px; background:rgba(99,102,241,0.08); border-radius:12px; border:1px solid rgba(99,102,241,0.2);">
+                <div style="display:flex; align-items:center; gap:12px; flex:1; min-width:0;">
+                    <div style="width:42px;height:42px;flex-shrink:0;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div style="min-width:0;">
+                        <div style="color:#e2e8f0;font-size:0.92rem;font-weight:600;">
+                            ${c.name}
+                            <span style="font-size:0.68rem;background:rgba(99,102,241,0.25);color:#a5b4fc;padding:2px 7px;border-radius:8px;margin-left:5px;font-weight:400;">${c.relation}</span>
+                        </div>
+                        <div style="color:#94a3b8;font-size:0.8rem;margin-top:2px;">${c.phone}</div>
+                    </div>
                 </div>
-                <button class="contact-call-btn" onclick="callEmergency('${contact.phone}')">
-                    <i class="fas fa-phone"></i>
-                </button>
+                <div style="display:flex; gap:6px; flex-shrink:0; margin-left:8px;">
+                    <a href="tel:${c.phone}" title="Call ${c.name}"
+                       style="width:38px;height:38px;border-radius:50%;background:rgba(34,197,94,0.15);color:#4ade80;border:1px solid rgba(34,197,94,0.35);display:flex;align-items:center;justify-content:center;text-decoration:none;">
+                        <i class="fas fa-phone" style="font-size:0.85rem;"></i>
+                    </a>
+                    <a href="sms:${c.phone}" title="SMS ${c.name}"
+                       style="width:38px;height:38px;border-radius:50%;background:rgba(59,130,246,0.15);color:#60a5fa;border:1px solid rgba(59,130,246,0.35);display:flex;align-items:center;justify-content:center;text-decoration:none;">
+                        <i class="fas fa-comment" style="font-size:0.85rem;"></i>
+                    </a>
+                    <button onclick="deleteContact(${c.id})" title="Delete"
+                       style="width:38px;height:38px;border-radius:50%;background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.3);cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-trash" style="font-size:0.82rem;"></i>
+                    </button>
+                </div>
             </div>
         `).join('');
-        
-    containers.forEach(container => {
-        // Ensure this container is actually meant for contacts 
-        // by verifying ID or specific classes based on HTML structure
-        if(container.id === 'currentContacts' || container.id === 'emergencyCurrentContacts') {
-            container.innerHTML = htmlContent;
-        }
-    });
     
-    console.log('Emergency contacts displayed successfully');
+    // Update ALL contact containers across all sections
+    ['currentContacts', 'currentContactsEmergency', 'emergencyCurrentContacts'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = htmlContent;
+    });
 }
 
 function setupSMSCharCounter() {
@@ -3730,40 +3743,51 @@ function updateCharCounter() {
 }
 
 // SMS Gateway Functions
-function updateEmergencyContacts() {
+async function updateEmergencyContacts() {
     const name = document.getElementById('emergencyContactName').value.trim();
-    const phone = document.getElementById('emergencyContactPhone').value.trim();
-    
-    if (!phone) {
-        showNotification('Phone number is required', 'error');
+    let phone = document.getElementById('emergencyContactPhone').value.trim();
+    const btn = event.currentTarget || document.querySelector('.contact-form .btn-primary');
+
+    if (!name) {
+        showNotification('❌ Please enter the contact name.', 'error');
         return;
     }
-    
-    fetch('/api/sms/update-contacts', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            phone_number: phone,
-            emergency_contact_name: name
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
+    if (!phone || phone.replace(/\D/g,'').length < 10) {
+        showNotification('❌ Please enter a valid phone number (min 10 digits).', 'error');
+        return;
+    }
+    // Auto-add +91 for Indian numbers
+    if (/^[6-9]\d{9}$/.test(phone)) {
+        phone = '+91' + phone;
+    }
+
+    const originalHTML = btn ? btn.innerHTML : '';
+    try {
+        if (btn) { btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; btn.disabled = true; }
+        
+        const res = await fetch('/api/contacts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, phone, relation: 'Emergency' })
+        });
+        const data = await res.json();
+        
         if (data.success) {
-            showNotification('Emergency contact updated successfully', 'success');
             document.getElementById('emergencyContactName').value = '';
             document.getElementById('emergencyContactPhone').value = '';
+            // Refresh both contact displays
+            await loadContacts();
             loadEmergencyContacts();
+            showNotification('✅ "' + name + '" added to Emergency Contacts!', 'success');
         } else {
-            showNotification(data.error || 'Failed to update contact', 'error');
+            showNotification('❌ ' + (data.error || 'Could not save contact.'), 'error');
         }
-    })
-    .catch(error => {
-        console.error('Error updating emergency contacts:', error);
-        showNotification('Failed to update contact', 'error');
-    });
+    } catch(err) {
+        console.error(err);
+        showNotification('❌ Network error. Is the server running?', 'error');
+    } finally {
+        if (btn) { btn.innerHTML = originalHTML || '<i class="fas fa-save"></i> Save Contact'; btn.disabled = false; }
+    }
 }
 
 // Duplicate sendHelpEmergencySMS removed - unified in Real SMS Functions section

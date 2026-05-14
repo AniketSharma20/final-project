@@ -19,6 +19,8 @@ load_dotenv()
 app = Flask(__name__)
 # Use stable SECRET_KEY from .env so sessions survive restarts
 app.secret_key = os.getenv('SECRET_KEY', secrets.token_hex(32))
+# Disable static file caching in development so CSS/JS changes apply immediately
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 CORS(app)
 
 # Database setup
