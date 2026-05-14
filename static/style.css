@@ -1587,16 +1587,19 @@ body {
 }
 
 .ai-chat-container {
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    background: rgba(15, 23, 42, 0.85);
+    border-radius: 20px;
+    border: 1px solid rgba(100, 116, 139, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.05);
     overflow: hidden;
+    backdrop-filter: blur(12px);
 }
 
 .ai-chat {
     display: flex;
     flex-direction: column;
-    height: 500px;
+    height: 520px;
+    overflow: hidden;
 }
 
 .chat-header {
@@ -1658,6 +1661,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    background: rgba(10, 15, 30, 0.5);
 }
 
 .message {
@@ -1689,70 +1693,99 @@ body {
 }
 
 .message-content {
-    background: #f8f9fa;
+    background: rgba(255, 255, 255, 0.08);
     padding: 12px 15px;
     border-radius: 15px;
     position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    color: #e2e8f0;
 }
 
 .user-message .message-content {
-    background: #667eea;
+    background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
+    border: none;
+}
+
+.assistant-message .message-content {
+    background: rgba(30, 41, 59, 0.8);
+    color: #cbd5e1;
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .message-content p {
     margin-bottom: 5px;
-    line-height: 1.4;
+    line-height: 1.5;
+    font-size: 0.93rem;
 }
 
 .message-time {
-    font-size: 0.75rem;
-    opacity: 0.7;
+    font-size: 0.72rem;
+    opacity: 0.6;
 }
 
 .ai-input-container {
-    border-top: 1px solid #e9ecef;
-    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 15px 20px;
+    background: rgba(10, 15, 30, 0.6);
 }
 
 .ai-input {
     display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: center;
 }
 
 .ai-input input {
     flex: 1;
-    padding: 12px 15px;
-    border: 2px solid #e9ecef;
+    padding: 12px 18px;
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
     border-radius: 25px;
     font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.08);
+    color: #e2e8f0;
     transition: border-color 0.3s ease;
+}
+
+.ai-input input::placeholder {
+    color: rgba(148, 163, 184, 0.6);
 }
 
 .ai-input input:focus {
     outline: none;
     border-color: #667eea;
+    background: rgba(255, 255, 255, 0.12);
 }
 
 .send-btn {
-    padding: 12px 15px;
+    padding: 0;
     border: none;
-    background: #667eea;
+    background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.3s ease;
-    width: 45px;
-    height: 45px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
+    font-size: 1rem;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.5);
 }
 
 .send-btn:hover {
-    background: #5a6fd8;
-    transform: scale(1.05);
+    background: linear-gradient(135deg, #5a6fd8, #6d28d9);
+    transform: scale(1.08);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.send-btn:active {
+    transform: scale(0.96);
 }
 
 .input-suggestions {
@@ -1760,8 +1793,8 @@ body {
 }
 
 .input-suggestions span {
-    font-size: 0.8rem;
-    color: #666;
+    font-size: 0.78rem;
+    color: rgba(148, 163, 184, 0.7);
     font-style: italic;
 }
 
@@ -5564,6 +5597,208 @@ body {
     
     .contact-number {
         font-size: 1rem;
+    }
+    
+    /* ===== MOBILE AI ASSISTANT COMPLETE FIX ===== */
+    .ai-dashboard {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    /* Chat section comes FIRST */
+    .ai-chat-container {
+        order: 1;
+        background: rgba(13, 17, 23, 0.95) !important;
+        border: 1px solid rgba(99, 102, 241, 0.4) !important;
+        border-radius: 18px !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
+        backdrop-filter: blur(12px);
+        overflow: hidden !important;
+    }
+
+    .ai-chat {
+        display: flex !important;
+        flex-direction: column !important;
+        height: calc(100dvh - 260px) !important;
+        max-height: 500px !important;
+        min-height: 300px !important;
+        overflow: hidden !important;
+    }
+
+    .ai-messages {
+        flex: 1 !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        min-height: 0 !important;
+    }
+
+    .ai-input-container {
+        flex-shrink: 0 !important;
+        position: sticky !important;
+        bottom: 0 !important;
+    }
+
+    /* AI controls comes SECOND but compact */
+    .ai-controls {
+        order: 2;
+        gap: 12px;
+    }
+
+    /* Voice buttons - dark theme */
+    .control-panel {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 14px !important;
+        box-shadow: none !important;
+        padding: 15px !important;
+    }
+
+    .control-panel h4 {
+        color: #e2e8f0 !important;
+        font-size: 0.9rem;
+        margin-bottom: 10px !important;
+    }
+
+    /* Make voice buttons side by side */
+    .voice-controls {
+        flex-direction: row !important;
+        gap: 10px !important;
+        flex-wrap: wrap;
+    }
+
+    .voice-controls .btn {
+        flex: 1;
+        min-width: 120px;
+        font-size: 0.85rem;
+        padding: 10px 12px !important;
+        min-height: 42px !important;
+    }
+
+    /* Quick Commands - dark theme + horizontal scrollable chips */
+    .ai-suggestions {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 14px !important;
+        box-shadow: none !important;
+        padding: 15px !important;
+    }
+
+    .ai-suggestions h4 {
+        color: #e2e8f0 !important;
+        font-size: 0.9rem;
+        margin-bottom: 10px !important;
+    }
+
+    /* Horizontal scrollable quick command chips */
+    .suggestion-buttons {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        gap: 8px !important;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+    }
+
+    .suggestion-buttons::-webkit-scrollbar {
+        display: none;
+    }
+
+    .suggestion-btn {
+        flex: 0 0 auto !important;
+        white-space: nowrap;
+        padding: 8px 14px !important;
+        background: rgba(102, 126, 234, 0.15) !important;
+        border: 1px solid rgba(102, 126, 234, 0.4) !important;
+        color: #a5b4fc !important;
+        border-radius: 20px !important;
+        font-size: 0.8rem !important;
+        min-height: 36px !important;
+        gap: 6px;
+    }
+
+    .suggestion-btn:hover,
+    .suggestion-btn:active {
+        background: rgba(102, 126, 234, 0.35) !important;
+        color: #c7d2fe !important;
+    }
+
+    /* Chat header - solid gradient */
+    .chat-header {
+        background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
+        padding: 14px 16px !important;
+    }
+
+    .chat-header h4 {
+        font-size: 1rem;
+    }
+
+    .chat-header p {
+        font-size: 0.78rem;
+    }
+
+    /* Messages area - solid dark */
+    .ai-messages {
+        background: #0d1117 !important;
+        padding: 14px !important;
+    }
+
+    /* Input area - solid dark */
+    .ai-input-container {
+        background: #0d1117 !important;
+        padding: 10px 12px !important;
+        border-top: 1px solid rgba(99, 102, 241, 0.3) !important;
+        overflow: visible !important;
+    }
+
+    .ai-input input {
+        background: #1e293b !important;
+        border: 1px solid rgba(99, 102, 241, 0.4) !important;
+        color: #e2e8f0 !important;
+        border-radius: 22px !important;
+        padding: 10px 15px !important;
+        flex: 1 !important;
+        min-width: 0 !important;
+    }
+
+    .ai-input input::placeholder {
+        color: rgba(148, 163, 184, 0.5) !important;
+    }
+
+    .input-suggestions span {
+        color: rgba(148, 163, 184, 0.6) !important;
+        font-size: 0.7rem;
+    }
+
+    /* === SEND BUTTON - Always visible on mobile === */
+    .ai-input {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        flex-wrap: nowrap !important;
+    }
+
+    .send-btn {
+        width: 46px !important;
+        height: 46px !important;
+        min-width: 46px !important;
+        min-height: 46px !important;
+        flex-shrink: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
+        border-radius: 50% !important;
+        color: white !important;
+        font-size: 1rem !important;
+        box-shadow: 0 4px 15px rgba(79, 70, 229, 0.6) !important;
+        border: none !important;
+        padding: 0 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 10 !important;
     }
 }
 

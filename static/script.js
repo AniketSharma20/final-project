@@ -659,9 +659,12 @@ function showSection(sectionId, pushState = true) {
             }
             break;
         case 'emergency':
-            // Load emergency contacts when emergency section is opened
+            // Load BOTH emergency contacts and personal contacts
             if (typeof loadEmergencyContacts === 'function') {
                 loadEmergencyContacts();
+            }
+            if (typeof loadContacts === 'function') {
+                loadContacts();
             }
             break;
         case 'complaints':
@@ -3875,79 +3878,122 @@ document.addEventListener('click', function(event) {
 
 // 1. Contacts Management
 async function loadContacts() {
-    const contactsDiv = document.getElementById('currentContacts');
-    if (!contactsDiv) return;
-    
     try {
         const response = await fetch('/api/contacts');
         if (!response.ok) throw new Error('Failed to load contacts');
         const contacts = await response.json();
         
-        if (contacts.length === 0) {
-            contactsDiv.innerHTML = '<p style="color:#94a3b8; font-size: 0.9rem; text-align: center; padding: 10px;">No personal contacts added yet.</p>';
-            return;
-        }
-        
-        contactsDiv.innerHTML = contacts.map(c => `
-            <div class="contact-card" style="display:flex; justify-content:space-between; align-items:center;">
-                <div style="display:flex; align-items:center; gap: 15px;">
-                    <div class="contact-icon women-helpline" style="background: rgba(99,102,241,0.1); color: #818cf8;"><i class="fas fa-user"></i></div>
-                    <div class="contact-info">
-                        <h5 style="margin:0; color:#e2e8f0; font-size:1.05rem;">${c.name} <span style="font-size:0.75rem; background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px; margin-left:6px; font-weight:normal;">${c.relation}</span></h5>
-                        <span class="contact-number" style="font-size:0.85rem; display:inline-block; margin-top:4px;">${c.phone}</span>
+        const htmlContent = contacts.length === 0 
+            ? `<div style="text-align:center; padding:20px; color:#64748b;">
+                <i class="fas fa-user-plus" style="font-size:2rem; margin-bottom:10px; display:block; color:#4f46e5;"></i>
+                <p style="font-size:0.9rem;">No personal contacts added yet.<br>Add one below!</p>
+               </div>`
+            : contacts.map(c => `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:14px; margin-bottom:8px; background:rgba(99,102,241,0.08); border-radius:12px; border:1px solid rgba(99,102,241,0.2);">
+                    <div style="display:flex; align-items:center; gap:12px; flex:1; min-width:0;">
+                        <div style="width:42px;height:42px;flex-shrink:0;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div style="min-width:0;">
+                            <div style="color:#e2e8f0;font-size:0.92rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                ${c.name}
+                                <span style="font-size:0.68rem;background:rgba(99,102,241,0.25);color:#a5b4fc;padding:2px 7px;border-radius:8px;margin-left:5px;font-weight:400;">${c.relation}</span>
+                            </div>
+                            <div style="color:#94a3b8;font-size:0.8rem;margin-top:2px;">${c.phone}</div>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:6px; flex-shrink:0; margin-left:8px;">
+                        <a href="tel:${c.phone}" title="Call ${c.name}"
+                           style="width:38px;height:38px;border-radius:50%;background:rgba(34,197,94,0.15);color:#4ade80;border:1px solid rgba(34,197,94,0.35);display:flex;align-items:center;justify-content:center;text-decoration:none;">
+                            <i class="fas fa-phone" style="font-size:0.85rem;"></i>
+                        </a>
+                        <a href="sms:${c.phone}" title="SMS ${c.name}"
+                           style="width:38px;height:38px;border-radius:50%;background:rgba(59,130,246,0.15);color:#60a5fa;border:1px solid rgba(59,130,246,0.35);display:flex;align-items:center;justify-content:center;text-decoration:none;">
+                            <i class="fas fa-comment" style="font-size:0.85rem;"></i>
+                        </a>
+                        <button onclick="deleteContact(${c.id})" title="Delete ${c.name}"
+                           style="width:38px;height:38px;border-radius:50%;background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.3);cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                            <i class="fas fa-trash" style="font-size:0.82rem;"></i>
+                        </button>
                     </div>
                 </div>
-                <div style="display:flex; gap: 8px;">
-                    <button onclick="callEmergency('${c.phone}')" class="contact-call-btn" title="Call Contact"><i class="fas fa-phone"></i></button>
-                    <button onclick="deleteContact(${c.id})" class="contact-call-btn" style="color: #ef4444; background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3);" title="Delete"><i class="fas fa-trash"></i></button>
-                </div>
-            </div>
-        `).join('');
+            `).join('');
+        
+        // Update ALL possible contact containers
+        ['currentContacts', 'currentContactsEmergency'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.innerHTML = htmlContent;
+        });
     } catch (err) {
-        console.error(err);
-        contactsDiv.innerHTML = '<p style="color:#ef4444; font-size: 0.9rem;">Error loading contacts.</p>';
+        console.error('loadContacts error:', err);
+        ['currentContacts', 'currentContactsEmergency'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.innerHTML = '<p style="color:#ef4444;font-size:0.9rem;text-align:center;padding:10px;">Failed to load contacts. Refresh to retry.</p>';
+        });
     }
 }
 
 async function saveContact(e) {
     e.preventDefault();
-    const name = document.getElementById('newContactName').value;
-    const phone = document.getElementById('newContactPhone').value;
+    const name = document.getElementById('newContactName').value.trim();
+    let phone = document.getElementById('newContactPhone').value.trim();
     const relation = document.getElementById('newContactRelation').value;
     const btn = e.target.querySelector('button[type="submit"]');
     
+    // Validation
+    if (!name) {
+        showNotification('❌ Please enter the contact name.', 'error');
+        return;
+    }
+    if (!phone || phone.replace(/\D/g,'').length < 10) {
+        showNotification('❌ Please enter a valid phone number (min 10 digits).', 'error');
+        return;
+    }
+    // Auto-format: add +91 if Indian number without country code
+    if (/^[6-9]\d{9}$/.test(phone)) {
+        phone = '+91' + phone;
+    }
+    
+    const originalHTML = btn.innerHTML;
     try {
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        btn.disabled = true;
         const res = await fetch('/api/contacts', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, phone, relation })
         });
         const data = await res.json();
-        if(data.success) {
+        if (data.success) {
             document.getElementById('addContactForm').reset();
-            loadContacts();
-            alert('Contact saved successfully!');
+            await loadContacts();
+            showNotification('✅ Contact "' + name + '" saved! You can now Call or SMS them directly.', 'success');
         } else {
-            alert('Error: ' + data.error);
+            showNotification('❌ Error: ' + (data.error || 'Could not save contact.'), 'error');
         }
     } catch(err) {
         console.error(err);
-        alert('Failed to save contact.');
+        showNotification('❌ Network error. Is the server running?', 'error');
     } finally {
-        btn.innerHTML = '<i class="fas fa-save"></i> Save';
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
     }
 }
 
 async function deleteContact(id) {
-    if(!confirm("Are you sure you want to delete this emergency contact?")) return;
+    if (!confirm('Delete this emergency contact?')) return;
     try {
         const res = await fetch(`/api/contacts/${id}`, { method: 'DELETE' });
         const data = await res.json();
-        if(data.success) loadContacts();
-        else alert('Error deleting contact.');
+        if (data.success) {
+            await loadContacts();
+            showNotification('Contact deleted.', 'info');
+        } else {
+            showNotification('❌ Error deleting contact.', 'error');
+        }
     } catch(err) {
         console.error(err);
+        showNotification('❌ Network error while deleting.', 'error');
     }
 }
 
@@ -4161,9 +4207,10 @@ function callEmergency(number) {
 }
 
 function initiateFakeCall() {
-    const targetNumber = prompt("Enter your own number to receive the fake Twilio call (e.g. +91...):");
-    if(!targetNumber) return;
-    triggerRealCall(targetNumber, 'fake', event.currentTarget);
+    showNotification("Fake call scheduled. Your phone will ring in 5 seconds.", 'info');
+    setTimeout(() => {
+        showCallNotification();
+    }, 5000);
 }
 
 // 4. Complaint Box Integration

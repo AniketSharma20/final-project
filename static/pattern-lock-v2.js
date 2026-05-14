@@ -88,6 +88,7 @@ class SimpleWorkingPatternLock {
         this.selectedDots = [];
         this.clearMessage();
         this.handleMove(e);
+        this.showMessage(`Draw your pattern...`, 'info');
     }
 
     handleMove(e) {
@@ -165,6 +166,13 @@ class SimpleWorkingPatternLock {
         setTimeout(() => {
             dot.style.transform = 'scale(1)';
         }, 200);
+
+        // Real-time feedback
+        if (this.selectedDots.length < this.options.minDots) {
+            this.showMessage(`Drawing... (${this.selectedDots.length}/${this.options.minDots})`, 'info');
+        } else {
+            this.showMessage('Pattern length is good! Release to validate.', 'info');
+        }
     }
 
     validatePattern() {

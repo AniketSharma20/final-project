@@ -414,7 +414,7 @@
                 }
 
                 // Real-time field validation
-                const fields = ['signupUsername', 'signupEmail', 'signupPassword', 'confirmPassword'];
+                const fields = ['signupFirstName', 'signupLastName', 'signupUsername', 'signupEmail', 'signupPassword', 'confirmPassword'];
                 fields.forEach(fieldId => {
                     const field = document.getElementById(fieldId);
                     if (field) {
@@ -499,6 +499,17 @@
                 let isValid = true;
                 let message = '';
 
+                // First/Last Name validation
+                if (input.id === 'signupFirstName' || input.id === 'signupLastName') {
+                    if (value.length < 2) {
+                        isValid = false;
+                        message = 'Must be at least 2 characters';
+                    } else if (!/^[a-zA-Z\\s]+$/.test(value)) {
+                        isValid = false;
+                        message = 'Can only contain letters';
+                    }
+                }
+
                 // Username validation
                 if (input.id === 'signupUsername') {
                     if (value.length < 3) {
@@ -560,7 +571,7 @@
                 if (method === 'pattern') {
                     passwordFields.forEach(field => {
                         const passwordInput = field.querySelector('input[type="password"]');
-                        if (passwordInput && !field.querySelector('#confirmPassword')) {
+                        if (passwordInput) {
                             field.style.display = 'none';
                         }
                     });
@@ -686,7 +697,11 @@
 
             validateForm() {
                 let isValid = true;
-                const requiredFields = ['signupUsername', 'signupEmail', 'signupPassword', 'confirmPassword'];
+                let requiredFields = ['signupFirstName', 'signupLastName', 'signupUsername', 'signupEmail'];
+                
+                if (this.currentAuthMethod === 'password') {
+                    requiredFields.push('signupPassword', 'confirmPassword');
+                }
 
                 requiredFields.forEach(fieldId => {
                     const field = document.getElementById(fieldId);
